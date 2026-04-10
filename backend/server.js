@@ -10,8 +10,22 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
-// Security
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+// ✅ FIX 1: Static files PEHLE lagao — Helmet se pehle
+
+app.use('/uploads', express.static('uploads'));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res) => {
+    res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.set('Cache-Control', 'public, max-age=31536000');
+  }
+}));
+
+// Security — static ke BAAD
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // ✅ FIX 2: images cross-origin allow
+}));
+
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true,
@@ -28,9 +42,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Logging
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
-// Static files
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
@@ -39,6 +50,7 @@ app.use('/api/cart', require('./routes/cartRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
@@ -47,6 +59,8 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Dat
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 
 // Error handler
+console.log(process.env.CLOUDINARY_CLOUD_NAME);
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;

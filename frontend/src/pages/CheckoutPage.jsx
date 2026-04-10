@@ -31,10 +31,34 @@ export default function CheckoutPage() {
         shippingAddress: { fullName: form.fullName, email: form.email, phone: form.phone, address: form.address, city: form.city, state: form.state, zip: form.zip, country: form.country },
         paymentMethod: form.paymentMethod,
       });
+
+      if (form.paymentMethod === 'JAZZCASH') {
+        const payRes = await api.post('/payments/initiate', { orderId: data.order.id });
+        const { gatewayUrl, payload } = payRes.data;
+
+        toast.loading('Redirecting to JazzCash...', { duration: 3000 });
+        
+        // Dynamically create a hidden form and submit it to Gateway URL
+        const formEl = document.createElement('form');
+        formEl.method = 'POST';
+        formEl.action = gatewayUrl;
+        
+        Object.keys(payload).forEach(key => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = payload[key];
+          formEl.appendChild(input);
+        });
+        
+        document.body.appendChild(formEl);
+        formEl.submit(); // Browser will redirect natively
+        return; 
+      }
+
       toast.success('Order placed successfully!');
       navigate(`/orders/${data.order.id}`);
-    } catch (err) { toast.error(err.response?.data?.message || 'Failed to place order'); }
-    finally { setLoading(false); }
+    } catch (err) { toast.error(err.response?.data?.message || 'Failed to place order'); setLoading(false); }
   };
 
   return (
@@ -64,12 +88,19 @@ export default function CheckoutPage() {
           <div className="card p-6">
             <h2 className="font-bold text-lg mb-4 flex items-center gap-2"><CreditCard size={18} className="text-primary-600" />Payment Method</h2>
             <div className="space-y-3">
-              {[['COD', 'Cash on Delivery', 'Pay when your order arrives'], ['CARD', 'Credit/Debit Card', 'Coming soon'], ['PAYPAL', 'PayPal', 'Coming soon']].map(([val, label, desc]) => (
-                <label key={val} className={`flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all ${form.paymentMethod === val ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'} ${val !== 'COD' ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                  <input type="radio" name="payment" value={val} checked={form.paymentMethod === val} onChange={(e) => val === 'COD' && setForm({...form, paymentMethod: e.target.value})} disabled={val !== 'COD'} className="text-primary-600" />
-                  <div><p className="font-semibold text-sm">{label}</p><p className="text-xs text-gray-500">{desc}</p></div>
-                </label>
-              ))}
+              {[
+                ['COD', 'Cash on Delivery', 'Pay when your order arrives'], 
+                ['JAZZCASH', 'JazzCash', 'Pay securely via Mobile Wallet or Card'], 
+                ['CARD', 'Credit/Debit Card', 'Coming soon']
+              ].map(([val, label, desc]) => {
+                const isDisabled = val === 'CARD';
+                return (
+                  <label key={val} className={`flex items-center gap-4 p-4 border-2 rounded-xl cursor-pointer transition-all ${form.paymentMethod === val ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <input type="radio" name="payment" value={val} checked={form.paymentMethod === val} onChange={(e) => !isDisabled && setForm({...form, paymentMethod: e.target.value})} disabled={isDisabled} className="text-primary-600" />
+                    <div><p className="font-semibold text-sm">{label}</p><p className="text-xs text-gray-500">{desc}</p></div>
+                  </label>
+                )
+              })}
             </div>
           </div>
         </div>

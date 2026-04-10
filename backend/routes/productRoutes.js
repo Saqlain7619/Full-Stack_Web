@@ -3,6 +3,7 @@ const { getProducts, getProduct, getFeatured, createProduct, updateProduct, dele
 const { protect, adminOnly } = require('../middleware/auth');
 const { upload } = require('../config/cloudinary');
 
+
 router.get('/', getProducts);
 router.get('/featured', getFeatured);
 router.get('/:id', getProduct);

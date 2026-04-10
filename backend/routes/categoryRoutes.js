@@ -3,6 +3,7 @@ const { getCategories, getCategory, createCategory, updateCategory, deleteCatego
 const { protect, adminOnly } = require('../middleware/auth');
 const { upload } = require('../config/cloudinary');
 
+
 router.get('/', getCategories);
 router.get('/:id', getCategory);
 router.post('/', protect, adminOnly, upload.single('image'), createCategory);

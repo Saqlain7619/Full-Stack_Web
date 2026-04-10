@@ -4,6 +4,7 @@ import { ArrowRight, Truck, Shield, RefreshCw, Headphones, Star, ChevronRight } 
 import api from '../api/axios';
 import ProductCard from '../components/product/ProductCard';
 import Spinner from '../components/common/Spinner';
+import { getImageUrl } from '../utils/imageUrl';
 
 const features = [
   { icon: Truck, title: 'Free Shipping', desc: 'On orders over $100' },
@@ -96,7 +97,7 @@ export default function HomePage() {
             {categories.slice(0, 6).map((cat) => (
               <Link key={cat.id} to={`/products?category=${cat.slug}`}
                 className="group card relative overflow-hidden aspect-[3/4] hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <img src={cat.image || 'https://placehold.co/300x400?text=' + cat.name} alt={cat.name}
+                <img src={cat.image ? getImageUrl(cat.image) : 'https://placehold.co/300x400?text=' + cat.name} alt={cat.name}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-3">

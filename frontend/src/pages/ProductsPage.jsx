@@ -4,6 +4,8 @@ import { SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import api from '../api/axios';
 import ProductGrid from '../components/product/ProductGrid';
 import Pagination from '../components/common/Pagination';
+import { getImageUrl } from '../utils/imageUrl';
+
 
 const sortOptions = [
   { value: 'createdAt', label: 'Newest First' },

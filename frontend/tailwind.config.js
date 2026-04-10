@@ -16,6 +16,7 @@ export default {
           800: '#943616',
           900: '#772e15',
         },
+
         dark: '#0f0f0f',
       },
       fontFamily: {
