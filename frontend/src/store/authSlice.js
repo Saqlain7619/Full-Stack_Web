@@ -1,7 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../api/axios';
 
-const user = JSON.parse(localStorage.getItem('user') || 'null');
+let user = null;
+try {
+  const storedUser = localStorage.getItem('user');
+  user = (storedUser && storedUser !== "undefined") ? JSON.parse(storedUser) : null;
+} catch (error) {
+  console.error("Auth initialization error:", error);
+  user = null;
+}
 const token = localStorage.getItem('token');
 
 export const login = createAsyncThunk('auth/login', async (creds, { rejectWithValue }) => {
