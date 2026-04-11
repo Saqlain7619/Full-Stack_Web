@@ -7,6 +7,7 @@ import { addToCart } from '../store/cartSlice';
 import StarRating from '../components/common/StarRating';
 import Spinner from '../components/common/Spinner';
 import toast from 'react-hot-toast';
+import CompleteTheLook from '../components/product/CompleteTheLook';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -54,15 +55,15 @@ export default function ProductDetailPage() {
 
       <div className="grid lg:grid-cols-2 gap-12">
         {/* Images */}
-        <div>
-          <div className="card overflow-hidden aspect-square mb-4 bg-gray-50">
-            <img src={product.images?.[activeImg] || 'https://placehold.co/600x600?text=No+Image'} alt={product.name} className="w-full h-full object-cover" />
+        <div className="flex flex-col items-center sm:items-start lg:items-center">
+          <div className="card w-full max-w-[450px] overflow-hidden aspect-square mb-4 bg-white border border-gray-100 p-4 flex items-center justify-center relative shadow-sm">
+            <img src={product.images?.[activeImg] || 'https://placehold.co/600x600?text=No+Image'} alt={product.name} className="max-w-full max-h-full object-contain drop-shadow-sm transition-transform duration-500 hover:scale-105" />
           </div>
           {product.images?.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="flex gap-3 overflow-x-auto pb-3 w-full max-w-[450px] px-1 hide-scrollbar">
               {product.images.map((img, i) => (
-                <button key={i} onClick={() => setActiveImg(i)} className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${i === activeImg ? 'border-primary-600' : 'border-gray-200 hover:border-gray-400'}`}>
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                <button key={i} onClick={() => setActiveImg(i)} className={`flex-shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 bg-white flex items-center justify-center p-1 cursor-pointer transition-all ${i === activeImg ? 'border-primary-500 shadow-md ring-2 ring-primary-500/20' : 'border-gray-200 hover:border-gray-300 opacity-70 hover:opacity-100'}`}>
+                  <img src={img} alt="" className="max-w-full max-h-full object-contain" />
                 </button>
               ))}
             </div>
@@ -121,6 +122,9 @@ export default function ProductDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Complete The Look */}
+      <CompleteTheLook productId={product.id} categorySlug={product.category?.slug || product.categoryId} />
 
       {/* Reviews */}
       <div className="mt-16">

@@ -17,7 +17,8 @@ const getImageUrl = (path) => {
 const emptyForm = {
   name: '', description: '', price: '', comparePrice: '',
   categoryId: '', stock: '', tags: '', featured: false, active: true,
-  images: null // ✅ FIX 2: empty string ki jagah null
+  images: null, // ✅ FIX 2: empty string ki jagah null
+  recommendations: [] // Added for Complete The Look
 };
 
 export default function AdminProducts() {
@@ -31,11 +32,12 @@ export default function AdminProducts() {
   const [saving, setSaving] = useState(false);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
+  const [allProducts, setAllProducts] = useState([]);
 
   const load = async (p = page) => {
     setLoading(true);
     try {
-      const params = { page: p, limit: 15 };
+      const params = { page: p, limit: 15, admin: true };
       if (search) params.search = search;
       const [prod, cat] = await Promise.all([
         api.get('/products', { params }),
@@ -60,12 +62,22 @@ export default function AdminProducts() {
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm);
+    fetchAllProducts();
     setModal(true);
   };
 
-  const openEdit = (p) => {
+  const fetchAllProducts = async () => {
+    try {
+      const res = await api.get('/products?limit=1000');
+      setAllProducts(res.data.products);
+    } catch {}
+  };
+
+  const openEdit = async (p) => {
     setEditing(p);
-    setForm({
+    
+    // Set base form
+    const editForm = {
       name: p.name,
       description: p.description,
       price: p.price,
@@ -75,9 +87,20 @@ export default function AdminProducts() {
       tags: p.tags?.join(', ') || '',
       featured: p.featured,
       active: p.active,
-      images: null, // Edit mein nahi chahiye re-upload jab tak user khud na kare
-    });
+      images: null,
+      recommendations: [],
+    };
+    
+    setForm(editForm);
+    fetchAllProducts();
     setModal(true);
+
+    try {
+      const res = await api.get(`/recommendations/${p.id}`);
+      if (res.data.products) {
+        setForm(f => ({ ...f, recommendations: res.data.products.map(x => x.id) }));
+      }
+    } catch {}
   };
 
   const handleSave = async (e) => {
@@ -111,12 +134,27 @@ export default function AdminProducts() {
       }
 
       const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+      let savedProductId = null;
       if (editing) {
-        await api.put(`/products/${editing.id}`, formData, config);
+        const res = await api.put(`/products/${editing.id}`, formData, config);
+        savedProductId = editing.id;
         toast.success('Product updated!');
       } else {
-        await api.post('/products', formData, config);
+        const res = await api.post('/products', formData, config);
+        savedProductId = res.data.product.id;
         toast.success('Product created!');
+      }
+
+      // Save recommendations
+      if (savedProductId) {
+        try {
+          await api.post('/recommendations', {
+            productId: savedProductId,
+            recommendedProductIds: form.recommendations
+          });
+        } catch (err) {
+          toast.error('Failed to save recommendations');
+        }
       }
 
       setModal(false);
@@ -344,6 +382,26 @@ export default function AdminProducts() {
                   <label className="block text-sm font-medium mb-1">Tags (comma-separated)</label>
                   <input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} className="input-field" placeholder="electronics, gadget, sale" />
                 </div>
+                
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium mb-1">Recommended Products (Complete The Look)</label>
+                  <select 
+                    multiple
+                    value={form.recommendations}
+                    onChange={(e) => {
+                      const options = [...e.target.selectedOptions];
+                      const values = options.map(option => option.value);
+                      setForm({ ...form, recommendations: values });
+                    }}
+                    className="input-field pt-2 pb-2 h-32"
+                  >
+                    {allProducts.filter(p => !editing || p.id !== editing.id).map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">Hold Ctrl/Cmd to select multiple products</p>
+                </div>
+
                 <div className="flex items-center gap-6">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} className="rounded" />

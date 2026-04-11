@@ -2,7 +2,7 @@ const prisma = require('../config/database');
 
 exports.getCategories = async (req, res) => {
   const categories = await prisma.category.findMany({
-    include: { _count: { select: { products: true } } },
+    include: { _count: { select: { products: { where: { active: true } } } } },
     orderBy: { name: 'asc' }
   });
   res.json({ success: true, categories });
@@ -19,8 +19,7 @@ exports.getCategory = async (req, res) => {
 exports.createCategory = async (req, res) => {
   const { name, description } = req.body;
   const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-  // ✅ Fix: const lagao, file.path nahi file.filename use karo
-  const image = req.file ? `/uploads/${req.file.filename}` : null;
+  const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
 
   const category = await prisma.category.create({
     data: { name, slug, description, image }
@@ -35,8 +34,7 @@ exports.updateCategory = async (req, res) => {
     data.name = name;
     data.slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
   }
-  // ✅ Fix: sirf file.filename use karo, file.path nahi
-  if (req.file) data.image = `/uploads/${req.file.filename}`;
+  if (req.file) data.image = req.file.path.replace(/\\/g, '/');
 
   const category = await prisma.category.update({
     where: { id: req.params.id }, data
@@ -45,6 +43,20 @@ exports.updateCategory = async (req, res) => {
 };
 
 exports.deleteCategory = async (req, res) => {
-  await prisma.category.delete({ where: { id: req.params.id } });
+  const categoryId = req.params.id;
+
+  // Check if any products are linked to this category
+  const productsCount = await prisma.product.count({
+    where: { categoryId }
+  });
+
+  if (productsCount > 0) {
+    return res.status(400).json({ 
+      success: false, 
+      message: `Cannot delete category. It contains ${productsCount} product(s). Please delete or reassign them first.` 
+    });
+  }
+
+  await prisma.category.delete({ where: { id: categoryId } });
   res.json({ success: true, message: 'Category deleted' });
 };

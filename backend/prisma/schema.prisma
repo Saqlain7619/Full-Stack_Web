@@ -93,6 +93,9 @@ model Product {
   orderItems OrderItem[]
   cartItems  CartItem[]
 
+  recommendations  ProductRecommendation[] @relation("ProductToRecommendations")
+  recommendedBy    ProductRecommendation[] @relation("RecommendedToProduct")
+
   @@map("products")
 }
 
@@ -185,4 +188,16 @@ model OrderItem {
   product Product @relation(fields: [productId], references: [id])
 
   @@map("order_items")
+}
+
+model ProductRecommendation {
+  id                    String  @id @default(uuid())
+  productId             String
+  recommendedProductId  String
+
+  product              Product @relation("ProductToRecommendations", fields: [productId], references: [id], onDelete: Cascade)
+  recommendedProduct   Product @relation("RecommendedToProduct", fields: [recommendedProductId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, recommendedProductId])
+  @@map("product_recommendations")
 }

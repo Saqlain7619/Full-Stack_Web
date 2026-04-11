@@ -33,9 +33,9 @@ const parseTags = (raw) => {
 };
 
 exports.getProducts = async (req, res) => {
-  const { page = 1, limit = 12, category, search, minPrice, maxPrice, sort = 'createdAt', order = 'desc', featured } = req.query;
+  const { page = 1, limit = 12, category, search, minPrice, maxPrice, sort = 'createdAt', order = 'desc', featured, admin } = req.query;
   const { take, skip } = paginate(page, limit);
-  const where = { active: true };
+  const where = admin === 'true' ? {} : { active: true };
   if (category) where.category = { slug: category };
   if (search) where.OR = [
     { name: { contains: search, mode: 'insensitive' } },
@@ -130,6 +130,16 @@ exports.updateProduct = async (req, res) => {
 };
 
 exports.deleteProduct = async (req, res) => {
-  await prisma.product.update({ where: { id: req.params.id }, data: { active: false } });
-  res.json({ success: true, message: 'Product deleted' });
+  const productId = req.params.id;
+  
+  // Force clean up any relations before deleting the product
+  await prisma.cartItem.deleteMany({ where: { productId } });
+  await prisma.orderItem.deleteMany({ where: { productId } });
+  await prisma.productRecommendation.deleteMany({ 
+    where: { OR: [{ productId }, { recommendedProductId: productId }] } 
+  });
+  
+  await prisma.product.delete({ where: { id: productId } });
+
+  res.json({ success: true, message: 'Product permanently deleted' });
 };
