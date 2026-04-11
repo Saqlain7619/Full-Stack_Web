@@ -43,12 +43,23 @@ export default function ProductsPage() {
       if (currentSort === 'price_desc') { params.sort = 'price'; params.order = 'desc'; }
       else if (currentSort !== 'createdAt') { params.sort = currentSort; }
       const { data } = await api.get('/products', { params });
-      setProducts(data.products); setTotal(data.total); setPages(data.pages);
-    } catch (err) { console.error(err); } finally { setLoading(false); }
+      setProducts(data?.products || []);
+      setTotal(data?.total || 0);
+      setPages(data?.pages || 1);
+    } catch (err) {
+      console.error(err);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
   }, [searchParams]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
-  useEffect(() => { api.get('/categories').then(({ data }) => setCategories(data.categories)); }, []);
+  useEffect(() => {
+    api.get('/categories')
+      .then(({ data }) => setCategories(data?.categories || []))
+      .catch(() => setCategories([]));
+  }, []);
 
   const setParam = (key, value) => {
     const p = new URLSearchParams(searchParams);
@@ -95,7 +106,7 @@ export default function ProductsPage() {
                 <button onClick={() => setParam('category', '')} className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${!currentCategory ? 'bg-primary-50 text-primary-700 font-semibold' : 'hover:bg-gray-50'}`}>
                   All Categories
                 </button>
-                {categories.map((cat) => (
+                {(categories || []).map((cat) => (
                   <button key={cat.id} onClick={() => setParam('category', cat.slug)}
                     className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${currentCategory === cat.slug ? 'bg-primary-50 text-primary-700 font-semibold' : 'hover:bg-gray-50'}`}>
                     <span>{cat.name}</span>

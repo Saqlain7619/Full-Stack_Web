@@ -19,9 +19,12 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([api.get('/products/featured'), api.get('/categories')]).then(([prod, cat]) => {
-      setFeatured(prod.data.products);
-      setCategories(cat.data.categories);
+    Promise.all([
+      api.get('/products/featured').catch(() => ({ data: { products: [] } })),
+      api.get('/categories').catch(() => ({ data: { categories: [] } }))
+    ]).then(([prod, cat]) => {
+      setFeatured(prod.data?.products || []);
+      setCategories(cat.data?.categories || []);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -151,7 +154,7 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-            {categories.slice(0, 4).map((cat) => (
+            {(categories || []).slice(0, 4).map((cat) => (
               <Link key={cat.id} to={`/products?category=${cat.slug}`}
                 className="group card relative overflow-hidden aspect-[4/5] hover:shadow-xl transition-all duration-300 hover:-translate-y-2 rounded-2xl">
                 <img src={cat.image ? getImageUrl(cat.image) : 'https://placehold.co/400x500?text=' + cat.name} alt={cat.name}
@@ -181,7 +184,7 @@ export default function HomePage() {
           </div>
           {loading ? <Spinner size="lg" className="py-20" /> : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-              {featured.map((p) => <ProductCard key={p.id} product={p} />)}
+              {(featured || []).map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           )}
         </div>
