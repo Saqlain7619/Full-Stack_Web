@@ -25,9 +25,22 @@ export default function AdminLayout() {
   const Sidebar = () => (
     <aside className="flex flex-col h-full bg-dark">
       <div className="flex items-center justify-between p-5 border-b border-white/10">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="bg-primary-600 p-1.5 rounded-lg"><ShoppingBag size={16} className="text-white" /></div>
-          <span className="font-display font-bold text-white text-lg">ShopNow</span>
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="bg-white p-2 rounded-xl">
+            <img 
+              src="/logo-icon.png" 
+              alt="Fash Fit Icon" 
+              className="h-8 w-auto object-contain transition-transform duration-500 group-hover:scale-110" 
+            />
+          </div>
+          <div className="flex flex-col items-start leading-none pt-0.5">
+            <span className="font-display font-bold text-lg text-white tracking-tight group-hover:text-primary-600 transition-colors uppercase">
+              FASH FIT
+            </span>
+            <span className="text-[7.5px] uppercase tracking-[0.4em] font-bold text-primary-600 mt-0.5 opacity-80">
+              Styling
+            </span>
+          </div>
         </Link>
         <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-400"><X size={18} /></button>
       </div>

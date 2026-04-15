@@ -73,72 +73,102 @@ export default function ProductsPage() {
   const hasFilters = currentCategory || currentSearch || currentMin || currentMax || currentFeatured;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-12 py-12">
+      {/* Header Area */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
         <div>
-          <h1 className="font-display font-bold text-2xl sm:text-3xl text-gray-900">
-            {currentSearch ? `Results for "${currentSearch}"` : currentCategory ? categories.find(c => c.slug === currentCategory)?.name || 'Products' : currentFeatured ? 'Featured Products' : 'All Products'}
+          <div className="flex items-center gap-2 mb-4">
+            <Link to="/" className="text-[10px] uppercase tracking-widest font-bold text-black/40 hover:text-black transition-colors">Home</Link>
+            <span className="text-black/10 text-[10px]">/</span>
+            <span className="text-[10px] uppercase tracking-widest font-bold text-primary-600">Collection</span>
+          </div>
+          <h1 className="font-display font-bold text-4xl sm:text-5xl text-black">
+            {currentFeatured ? 'The Selected' : (currentCategory ? categories.find(c => c.slug === currentCategory)?.name : 'All Collection')}
           </h1>
-          {!loading && <p className="text-gray-500 text-sm mt-1">{total} products found</p>}
+          {currentSearch && <p className="text-black/40 text-sm mt-3 font-medium">Results for "{currentSearch}"</p>}
         </div>
-        <div className="flex items-center gap-3">
-          {hasFilters && <button onClick={clearFilters} className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700"><X size={14} />Clear filters</button>}
-          <button onClick={() => setFiltersOpen(!filtersOpen)} className="flex items-center gap-2 btn-secondary py-2 px-4 text-sm lg:hidden">
-            <SlidersHorizontal size={15} />Filters
-          </button>
-          <div className="relative">
-            <select value={currentSort} onChange={(e) => setParam('sort', e.target.value)} className="appearance-none pl-3 pr-8 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white cursor-pointer">
+
+        <div className="flex items-center gap-4">
+           {!loading && <span className="text-[11px] font-bold uppercase tracking-widest text-black/40 mr-2">{total} Pieces found</span>}
+           <div className="relative group">
+            <select 
+              value={currentSort} 
+              onChange={(e) => setParam('sort', e.target.value)} 
+              className="appearance-none bg-white border border-black/5 rounded-xl pl-5 pr-12 py-3 text-[11px] font-bold uppercase tracking-widest focus:outline-none focus:border-primary-600 transition-all cursor-pointer shadow-sm hover:shadow-md"
+            >
               {sortOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
-            <ChevronDown size={14} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-          </div>
+            <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 group-hover:text-black transition-colors pointer-events-none" />
+           </div>
+           <button onClick={() => setFiltersOpen(!filtersOpen)} className="lg:hidden flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl text-[11px] font-bold uppercase tracking-widest">
+             <SlidersHorizontal size={14} /> Filters
+           </button>
         </div>
       </div>
 
-      <div className="flex gap-8">
-        {/* Sidebar Filters */}
-        <aside className={`${filtersOpen ? 'block' : 'hidden'} lg:block w-full lg:w-64 flex-shrink-0`}>
-          <div className="card p-5 space-y-6">
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Modern Sidebar Filters */}
+        <aside className={`${filtersOpen ? 'fixed inset-0 z-[100] bg-white p-8 pt-20 animate-in slide-in-from-bottom duration-500' : 'hidden'} lg:block w-72 flex-shrink-0 transition-all`}>
+           {filtersOpen && <button onClick={() => setFiltersOpen(false)} className="lg:hidden absolute top-6 right-6 p-2 bg-black/5 rounded-full"><X size={24} /></button>}
+           
+           <div className="space-y-12">
             <div>
-              <h3 className="font-bold text-gray-900 mb-3">Categories</h3>
-              <div className="space-y-2">
-                <button onClick={() => setParam('category', '')} className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${!currentCategory ? 'bg-primary-50 text-primary-700 font-semibold' : 'hover:bg-gray-50'}`}>
-                  All Categories
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-black mb-6">Categories</h3>
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={() => setParam('category', '')} 
+                  className={`text-left text-[13px] font-medium transition-colors ${!currentCategory ? 'text-primary-600' : 'text-black/40 hover:text-black'}`}
+                >
+                  All Masterpieces
                 </button>
                 {(categories || []).map((cat) => (
-                  <button key={cat.id} onClick={() => setParam('category', cat.slug)}
-                    className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-colors flex items-center justify-between ${currentCategory === cat.slug ? 'bg-primary-50 text-primary-700 font-semibold' : 'hover:bg-gray-50'}`}>
+                  <button 
+                    key={cat.id} 
+                    onClick={() => setParam('category', cat.slug)}
+                    className={`text-left text-[13px] font-medium transition-all flex items-center justify-between group ${currentCategory === cat.slug ? 'text-primary-600 pl-2 border-l-2 border-primary-600' : 'text-black/40 hover:text-black hover:pl-2'}`}
+                  >
                     <span>{cat.name}</span>
-                    <span className="text-xs text-gray-400">{cat._count?.products}</span>
+                    <span className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">({cat._count?.products})</span>
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <h3 className="font-bold text-gray-900 mb-3">Price Range</h3>
-              <div className="flex items-center gap-2">
-                <input type="number" placeholder="Min" value={currentMin} onChange={(e) => setParam('minPrice', e.target.value)} className="input-field py-2 text-sm" min="0" />
-                <span className="text-gray-400 text-sm">—</span>
-                <input type="number" placeholder="Max" value={currentMax} onChange={(e) => setParam('maxPrice', e.target.value)} className="input-field py-2 text-sm" min="0" />
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-black mb-6">Price Spectrum</h3>
+              <div className="flex items-center gap-4">
+                <div className="relative flex-1 group">
+                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-black/20 group-focus-within:text-primary-600">$</span>
+                   <input type="number" placeholder="Min" value={currentMin} onChange={(e) => setParam('minPrice', e.target.value)} className="w-full pl-8 pr-4 py-3 bg-luxury-gray border border-transparent rounded-xl text-xs font-bold focus:outline-none focus:bg-white focus:border-primary-600 transition-all" />
+                </div>
+                <div className="relative flex-1 group">
+                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-black/20 group-focus-within:text-primary-600">$</span>
+                   <input type="number" placeholder="Max" value={currentMax} onChange={(e) => setParam('maxPrice', e.target.value)} className="w-full pl-8 pr-4 py-3 bg-luxury-gray border border-transparent rounded-xl text-xs font-bold focus:outline-none focus:bg-white focus:border-primary-600 transition-all" />
+                </div>
               </div>
             </div>
 
-            <div>
-              <h3 className="font-bold text-gray-900 mb-3">Special</h3>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={currentFeatured === 'true'} onChange={(e) => setParam('featured', e.target.checked ? 'true' : '')} className="rounded text-primary-600" />
-                <span className="text-sm">Featured products only</span>
-              </label>
+            <div className="pt-6">
+              {hasFilters && (
+                <button 
+                  onClick={clearFilters} 
+                  className="w-full py-4 border border-black/5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <X size={14} /> Reset All Filters
+                </button>
+              )}
             </div>
-          </div>
+           </div>
         </aside>
 
-        {/* Products */}
-        <div className="flex-1 min-w-0">
+        {/* Catalog Grid */}
+        <div className="flex-1">
           <ProductGrid products={products} loading={loading} />
-          <Pagination page={currentPage} pages={pages} onChange={(p) => setParam('page', p)} />
+          {!loading && products.length > 0 && (
+            <div className="mt-16 pt-12 border-t border-black/5 flex justify-center">
+              <Pagination page={currentPage} pages={pages} onChange={(p) => setParam('page', p)} />
+            </div>
+          )}
         </div>
       </div>
     </div>

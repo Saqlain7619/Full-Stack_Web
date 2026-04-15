@@ -50,24 +50,31 @@ export default function CompleteTheLook({ productId, categorySlug }) {
   }
 
   return (
-    <div className="mt-16 bg-gradient-to-br from-primary-50 to-orange-50/30 p-6 sm:p-8 rounded-3xl border border-primary-100 shadow-sm relative overflow-hidden">
-      {/* Decorative blurred blob */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-primary-200/40 rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
-
-      <div className="flex items-center gap-2 mb-6">
-        <Sparkles className="text-primary-500" size={24} />
-        <h2 className="text-2xl font-bold text-gray-900 font-display">Complete The Look</h2>
+    <div className="mt-24 border-t border-black/5 pt-16">
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-1 h-4 bg-primary-600 rounded-full" />
+            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-primary-600">Curated Styling</span>
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-display font-bold text-black">Complete The Look</h2>
+        </div>
+        <p className="text-black/40 text-sm max-w-xs font-medium">
+          Our stylists have handpicked these pieces to perfectly complement your selection.
+        </p>
       </div>
       
-      <p className="text-gray-600 mb-6 text-sm">Perfect pairings selected just for you.</p>
-
-      {/* Grid view limits width & ensures consistent height without bizarre stretching */}
-      <div className="flex overflow-x-auto gap-5 pb-4 snap-x hide-scrollbar items-start">
-        {recommendations.map((product) => (
-          <div key={product.id} className="w-[180px] sm:w-[220px] snap-start flex-shrink-0 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transform hover:-translate-y-1 transition-transform duration-300">
-            <ProductCard product={product} />
-          </div>
-        ))}
+      <div className="relative group">
+        <div className="flex overflow-x-auto gap-8 pb-10 snap-x hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+          {recommendations.map((product) => (
+            <div key={product.id} className="w-[280px] snap-start flex-shrink-0">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+        
+        {/* Subtle Scroll Hint */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-full bg-gradient-to-l from-white to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
     </div>
   );

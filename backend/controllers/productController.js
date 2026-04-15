@@ -99,6 +99,9 @@ exports.createProduct = async (req, res) => {
       stock: parseInt(stock) || 0,
       tags,
       featured: featured === 'true' || featured === true,
+      overlayTop: req.body.overlayTop ? parseInt(req.body.overlayTop) : null,
+      overlayLeft: req.body.overlayLeft ? parseInt(req.body.overlayLeft) : null,
+      overlayWidth: req.body.overlayWidth ? parseInt(req.body.overlayWidth) : null,
     },
     include: { category: true },
   });
@@ -118,6 +121,9 @@ exports.updateProduct = async (req, res) => {
   if (req.body.tags !== undefined) data.tags = parseTags(req.body.tags);
   if (featured !== undefined) data.featured = featured === 'true' || featured === true;
   if (active !== undefined) data.active = active === 'true' || active === true;
+  if (req.body.overlayTop !== undefined) data.overlayTop = parseInt(req.body.overlayTop);
+  if (req.body.overlayLeft !== undefined) data.overlayLeft = parseInt(req.body.overlayLeft);
+  if (req.body.overlayWidth !== undefined) data.overlayWidth = parseInt(req.body.overlayWidth);
 
   if (req.files && req.files.length > 0) {
     if (req.files.length > 4) return res.status(400).json({ success: false, message: 'Maximum 4 images allowed' });

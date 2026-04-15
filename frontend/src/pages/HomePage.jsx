@@ -30,107 +30,63 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-orange-50/50">
-        {/* Background Accents */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary-200/40 rounded-full blur-3xl" />
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-orange-200/40 rounded-full blur-3xl" />
+      {/* ── Luxury Hero Banner ── */}
+      <section className="relative h-[85vh] flex items-center overflow-hidden bg-black">
+        {/* Background Overlay Image */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=2000&auto=format&fit=crop" 
+            alt="Luxury Fashion" 
+            className="w-full h-full object-cover opacity-60 scale-105 animate-slow-zoom"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left Content */}
-            <div className="max-w-2xl z-10">
-              <div className="inline-flex items-center gap-2 bg-white border border-primary-100 shadow-sm rounded-full px-3 py-1.5 text-sm text-primary-700 mb-4 font-medium animate-fade-in">
-                <Star size={14} className="fill-primary-500 text-primary-500" />
-                <span>The New Premium Collection</span>
-              </div>
-              
-              <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-[1.15] text-gray-900 mb-4">
-                Redefine Your<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-orange-400">Everyday Style.</span>
-              </h1>
-              
-              <p className="text-gray-600 text-base sm:text-lg mb-6 leading-relaxed max-w-lg">
-                Discover our meticulously curated collection of premium products. Designed to make you stand out and feel exceptional.
-              </p>
-              
-              <div className="flex flex-wrap gap-3">
-                <Link to="/products" className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-primary-600/30 transition-all hover:-translate-y-1">
-                  Explore Collection <ArrowRight size={18} />
-                </Link>
-                <Link to="/products?featured=true" className="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-900 font-bold px-6 py-3 rounded-xl shadow-sm border border-gray-200 transition-all hover:-translate-y-1">
-                  View Lookbook
-                </Link>
-              </div>
-              
-              {/* Trust Indicators */}
-              <div className="mt-8 flex items-center gap-4">
-                <div className="flex -space-x-4">
-                  {[1,2,3].map(i => (
-                    <img key={i} src={`https://i.pravatar.cc/100?img=${i+20}`} alt="Customer" className="w-10 h-10 rounded-full border-2 border-white shadow-sm" />
-                  ))}
-                  <div className="w-10 h-10 rounded-full border-2 border-white bg-gray-50 flex items-center justify-center text-[10px] font-bold text-gray-600 shadow-sm">+9k</div>
-                </div>
-                <div className="text-sm">
-                  <div className="flex items-center gap-1 text-amber-400 mb-0.5">
-                    {[1,2,3,4,5].map(i => <Star key={i} size={12} className="fill-current" />)}
-                  </div>
-                  <p className="text-gray-600 text-xs font-medium">Loved by 50k+ customers</p>
-                </div>
-              </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full pt-10">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold text-white mb-8 animate-fade-in">
+              <span className="w-1.5 h-1.5 bg-primary-600 rounded-full animate-pulse" />
+              Est. 2024 • Premium Collection
             </div>
-
-            {/* Right Image */}
-            <div className="relative mt-12 lg:mt-0 z-10 w-full max-w-sm sm:max-w-md mx-auto lg:max-w-[400px]">
-              {/* Main Image */}
-              <div className="relative rounded-3xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl aspect-square sm:aspect-[4/5] object-cover max-h-[380px] lg:max-h-[440px] z-10 border-4 sm:border-8 border-white bg-white">
-                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200&auto=format&fit=crop" alt="Premium Fashion Collection" className="w-full h-full object-cover object-top" />
-              </div>
-              
-              {/* Floating Element 1 - Left */}
-              <div className="absolute top-8 sm:top-12 -left-4 sm:-left-10 bg-white p-2 sm:p-3 rounded-xl shadow-xl z-20 flex items-center gap-2 sm:gap-3 animate-bounce" style={{ animationDuration: '3s' }}>
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
-                  <Shield size={16} />
-                </div>
-                <div>
-                  <p className="text-[9px] sm:text-[10px] text-gray-500 font-medium">100% Authentic</p>
-                  <p className="font-bold text-gray-900 text-xs sm:text-sm">Guaranteed</p>
-                </div>
-              </div>
-              
-              {/* Floating Element 2 - Right */}
-              <div className="absolute bottom-8 sm:bottom-16 -right-4 sm:-right-8 bg-white p-2 sm:p-3 rounded-xl shadow-xl z-20 flex items-center gap-2 sm:gap-3 animate-bounce" style={{ animationDuration: '4s', animationDelay: '1s' }}>
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-100 rounded-full flex items-center justify-center text-primary-600">
-                  <Star size={16} className="fill-current" />
-                </div>
-                <div>
-                  <p className="text-[9px] sm:text-[10px] text-gray-500 font-medium">Top Rated</p>
-                  <p className="font-bold text-gray-900 text-xs sm:text-sm">4.9/5 Stars</p>
-                </div>
-              </div>
-              
-              {/* Decorative Blob */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary-200/50 rounded-full blur-3xl -z-10" />
+            
+            <h1 className="font-display font-bold text-5xl sm:text-7xl lg:text-8xl text-white mb-6 leading-none">
+              Modern <br />
+              <span className="text-primary-600">Elegance.</span>
+            </h1>
+            
+            <p className="text-gray-300 text-lg sm:text-xl mb-10 leading-relaxed font-light max-w-lg">
+              Redefine your wardrobe with our curation of high-end fashion pieces designed for those who command excellence.
+            </p>
+            
+            <div className="flex flex-wrap gap-5">
+              <Link to="/products" className="btn-primary flex items-center gap-3 group">
+                Shop Collection 
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link to="/products?featured=true" className="btn-secondary !bg-transparent !text-white !border-white/30 hover:!bg-white hover:!text-black group">
+                View Lookbook
+              </Link>
             </div>
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-40">
+          <div className="w-[1px] h-16 bg-gradient-to-b from-white to-transparent" />
+        </div>
       </section>
 
-      {/* Features */}
-      <section className="py-8 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ── Features Refined ── */}
+      <section className="py-12 bg-white border-b border-black/5">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+          <div className="flex flex-wrap justify-center gap-10 lg:gap-20">
             {features.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Icon size={18} className="text-primary-600" />
+              <div key={title} className="flex flex-col items-center gap-2 group">
+                <div className="w-8 h-8 flex items-center justify-center text-primary-600 mb-1 group-hover:scale-110 transition-transform">
+                  <Icon size={24} strokeWidth={1.5} />
                 </div>
-                <div>
-                  <p className="font-semibold text-sm text-gray-900">{title}</p>
-                  <p className="text-xs text-gray-500">{desc}</p>
-                </div>
+                <p className="text-[11px] uppercase tracking-widest font-bold text-black">{title}</p>
+                <p className="text-[10px] text-black/40 font-medium">{desc}</p>
               </div>
             ))}
           </div>
