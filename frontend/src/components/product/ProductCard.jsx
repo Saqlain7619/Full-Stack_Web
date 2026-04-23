@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Heart, Star } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Sparkles } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../store/cartSlice';
 import toast from 'react-hot-toast';
 import StarRating from '../common/StarRating';
-import { getImageUrl } from '../../utils/imageUrl'; // ✅ ADD
+import { getImageUrl } from '../../utils/imageUrl'; 
+import { formatPrice } from '../../utils/formatPrice';
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export default function ProductCard({ product }) {
     <div className="group card-premium flex flex-col h-full bg-white transition-all duration-500 hover:-translate-y-2">
       {/* Image Viewport */}
       <div className="relative aspect-[3/4] overflow-hidden bg-luxury-cream">
-        <Link to={`/products/${product.slug || product.id}`} className="block w-full h-full">
+        <Link to={`/catalog/${product.slug || product.id}`} className="block w-full h-full">
           <img
             src={getImageUrl(product.images?.[0])}
             alt={product.name}
@@ -48,22 +49,27 @@ export default function ProductCard({ product }) {
               <Star size={10} className="fill-primary-600 text-primary-600" /> NEW
             </span>
           )}
+          {product.avatarImage && (
+            <span className="bg-primary-50 text-primary-700 text-[10px] font-bold px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 border border-primary-100">
+              <Sparkles size={10} className="text-primary-600" /> TRY-ON
+            </span>
+          )}
         </div>
 
         {/* Action Overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out flex gap-2">
+        <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 translate-y-0 sm:translate-y-full sm:group-hover:translate-y-0 transition-transform duration-500 ease-out flex gap-2 bg-gradient-to-t from-black/20 to-transparent sm:bg-none">
           <Link 
-            to={`/products/${product.slug || product.id}`}
+            to={`/catalog/${product.slug || product.id}`}
             className="flex-1 bg-black text-white text-[11px] font-bold py-3 rounded-lg text-center hover:bg-primary-600 transition-colors uppercase tracking-widest shadow-xl"
           >
             Virtual Fitting
           </Link>
-          <button 
-            onClick={handleAddToCart}
+          <Link 
+            to={`/catalog/${product.slug || product.id}`}
             className="w-11 h-11 bg-white text-black rounded-lg flex items-center justify-center hover:text-primary-600 transition-colors shadow-xl"
           >
             <ShoppingCart size={18} />
-          </button>
+          </Link>
         </div>
 
         {/* Wishlist Button */}
@@ -84,7 +90,7 @@ export default function ProductCard({ product }) {
           </div>
         </div>
 
-        <Link to={`/products/${product.slug || product.id}`} className="block mb-3">
+        <Link to={`/catalog/${product.slug || product.id}`} className="block mb-3">
           <h3 className="font-display font-semibold text-base text-black leading-tight group-hover:text-primary-600 transition-colors line-clamp-2">
             {product.name}
           </h3>
@@ -92,11 +98,11 @@ export default function ProductCard({ product }) {
         
         <div className="mt-auto flex items-center gap-3">
           <span className="font-display font-bold text-lg text-black">
-            ${product.price.toFixed(2)}
+            {formatPrice(product.price)}
           </span>
           {product.comparePrice && (
             <span className="text-sm text-black/30 line-through">
-              ${product.comparePrice.toFixed(2)}
+              {formatPrice(product.comparePrice)}
             </span>
           )}
         </div>

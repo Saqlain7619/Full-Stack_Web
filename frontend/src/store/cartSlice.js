@@ -4,8 +4,8 @@ import api from '../api/axios';
 export const fetchCart = createAsyncThunk('cart/fetch', async (_, { rejectWithValue }) => {
   try { const { data } = await api.get('/cart'); return data.cart; } catch (err) { return rejectWithValue(err.response?.data?.message); }
 });
-export const addToCart = createAsyncThunk('cart/add', async (item, { rejectWithValue }) => {
-  try { const { data } = await api.post('/cart', item); return data.cart; } catch (err) { return rejectWithValue(err.response?.data?.message); }
+export const addToCart = createAsyncThunk('cart/add', async ({ productId, quantity, size }, { rejectWithValue }) => {
+  try { const { data } = await api.post('/cart', { productId, quantity, size }); return data.cart; } catch (err) { return rejectWithValue(err.response?.data?.message); }
 });
 export const updateCartItem = createAsyncThunk('cart/update', async ({ itemId, quantity }, { rejectWithValue }) => {
   try { const { data } = await api.put(`/cart/items/${itemId}`, { quantity }); return data.cart; } catch (err) { return rejectWithValue(err.response?.data?.message); }

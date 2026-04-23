@@ -7,8 +7,8 @@ const { upload } = require('../config/cloudinary');
 router.get('/', getProducts);
 router.get('/featured', getFeatured);
 router.get('/:id', getProduct);
-router.post('/', protect, adminOnly, upload.array('images', 5), createProduct);
-router.put('/:id', protect, adminOnly, upload.array('images', 5), updateProduct);
+router.post('/', protect, adminOnly, upload.fields([{ name: 'images', maxCount: 5 }, { name: 'avatarImage', maxCount: 1 }]), createProduct);
+router.put('/:id', protect, adminOnly, upload.fields([{ name: 'images', maxCount: 5 }, { name: 'avatarImage', maxCount: 1 }]), updateProduct);
 router.delete('/:id', protect, adminOnly, deleteProduct);
 
 module.exports = router;

@@ -4,6 +4,7 @@ import { Eye, ChevronDown } from 'lucide-react';
 import api from '../../api/axios';
 import Spinner from '../../components/common/Spinner';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../../utils/formatPrice';
 
 const statusColors = { PENDING:'bg-yellow-100 text-yellow-700', CONFIRMED:'bg-blue-100 text-blue-700', PROCESSING:'bg-purple-100 text-purple-700', SHIPPED:'bg-indigo-100 text-indigo-700', DELIVERED:'bg-green-100 text-green-700', CANCELLED:'bg-red-100 text-red-700', REFUNDED:'bg-gray-100 text-gray-600' };
 const statusOptions = ['PENDING','CONFIRMED','PROCESSING','SHIPPED','DELIVERED','CANCELLED','REFUNDED'];
@@ -64,7 +65,7 @@ export default function AdminOrders() {
                       <p className="text-xs text-gray-500">{order.user?.email}</p>
                     </td>
                     <td className="px-4 py-3 text-gray-600">{order.items?.length}</td>
-                    <td className="px-4 py-3 font-bold">${order.total?.toFixed(2)}</td>
+                    <td className="px-4 py-3 font-bold">{formatPrice(order.total)}</td>
                     <td className="px-4 py-3">
                       <div className="relative">
                         <select value={order.status} onChange={(e) => updateStatus(order.id, e.target.value)} className={`appearance-none text-xs font-semibold px-2.5 py-1.5 rounded-lg border-0 cursor-pointer ${statusColors[order.status]} pr-6`}>

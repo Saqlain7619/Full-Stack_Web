@@ -74,17 +74,18 @@ exports.getFeatured = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
-  console.log('FILES:', req.files);
-  console.log('BODY:', req.body);
-
   const { name, description, price, comparePrice, categoryId, stock, featured } = req.body;
 
-  if (req.files && req.files.length > 4) {
+  // Handle images from upload.fields
+  const imageFiles = req.files?.['images'] || [];
+  const avatarFiles = req.files?.['avatarImage'] || [];
+
+  if (imageFiles.length > 4) {
     return res.status(400).json({ success: false, message: 'Maximum 4 images allowed' });
   }
 
-  // Cloudinary use hoga — file.path mein Cloudinary URL hoga, aur local par replace slashes
-  const images = req.files?.map(file => file.path.replace(/\\/g, '/')) || [];
+  const images = imageFiles.map(file => file.path.replace(/\\/g, '/'));
+  const avatarImage = avatarFiles.length > 0 ? avatarFiles[0].path.replace(/\\/g, '/') : null;
 
   const tags = parseTags(req.body.tags);
   const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') + '-' + Date.now();
@@ -95,13 +96,11 @@ exports.createProduct = async (req, res) => {
       price: parseFloat(price),
       comparePrice: comparePrice ? parseFloat(comparePrice) : null,
       images,
+      avatarImage,
       categoryId,
       stock: parseInt(stock) || 0,
       tags,
       featured: featured === 'true' || featured === true,
-      overlayTop: req.body.overlayTop ? parseInt(req.body.overlayTop) : null,
-      overlayLeft: req.body.overlayLeft ? parseInt(req.body.overlayLeft) : null,
-      overlayWidth: req.body.overlayWidth ? parseInt(req.body.overlayWidth) : null,
     },
     include: { category: true },
   });
@@ -121,14 +120,18 @@ exports.updateProduct = async (req, res) => {
   if (req.body.tags !== undefined) data.tags = parseTags(req.body.tags);
   if (featured !== undefined) data.featured = featured === 'true' || featured === true;
   if (active !== undefined) data.active = active === 'true' || active === true;
-  if (req.body.overlayTop !== undefined) data.overlayTop = parseInt(req.body.overlayTop);
-  if (req.body.overlayLeft !== undefined) data.overlayLeft = parseInt(req.body.overlayLeft);
-  if (req.body.overlayWidth !== undefined) data.overlayWidth = parseInt(req.body.overlayWidth);
 
-  if (req.files && req.files.length > 0) {
-    if (req.files.length > 4) return res.status(400).json({ success: false, message: 'Maximum 4 images allowed' });
-    // Cloudinary URL hoga, aur local Windows paths fix
-    data.images = req.files.map(file => file.path.replace(/\\/g, '/'));
+  // Handle images from upload.fields
+  const imageFiles = req.files?.['images'];
+  const avatarFiles = req.files?.['avatarImage'];
+
+  if (imageFiles && imageFiles.length > 0) {
+    if (imageFiles.length > 4) return res.status(400).json({ success: false, message: 'Maximum 4 images allowed' });
+    data.images = imageFiles.map(file => file.path.replace(/\\/g, '/'));
+  }
+
+  if (avatarFiles && avatarFiles.length > 0) {
+    data.avatarImage = avatarFiles[0].path.replace(/\\/g, '/');
   }
 
   const product = await prisma.product.update({ where: { id: req.params.id }, data, include: { category: true } });

@@ -5,6 +5,7 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 import { fetchCart, updateCartItem, removeFromCart, selectCartTotal } from '../store/cartSlice';
 import Spinner from '../components/common/Spinner';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/formatPrice';
 
 export default function CartPage() {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ export default function CartPage() {
       <ShoppingBag size={64} className="mx-auto text-gray-300 mb-6" />
       <h2 className="text-2xl font-bold mb-3">Your cart is empty</h2>
       <p className="text-gray-500 mb-6">Looks like you haven't added anything yet.</p>
-      <Link to="/products" className="btn-primary">Start Shopping</Link>
+      <Link to="/catalog" className="btn-primary">Start Shopping</Link>
     </div>
   );
 
@@ -58,14 +59,17 @@ export default function CartPage() {
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
             <div key={item.id} className="card p-4 flex gap-4">
-              <Link to={`/products/${item.product.slug || item.product.id}`} className="flex-shrink-0">
+              <Link to={`/catalog/${item.product.slug || item.product.id}`} className="flex-shrink-0">
                 <img src={item.product.images?.[0] || 'https://placehold.co/100x100'} alt={item.product.name} className="w-24 h-24 object-cover rounded-xl" />
               </Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="text-xs text-primary-600 font-medium">{item.product.category?.name}</p>
-                    <Link to={`/products/${item.product.slug || item.product.id}`} className="font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2">{item.product.name}</Link>
+                    <Link to={`/catalog/${item.product.slug || item.product.id}`} className="font-semibold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2">{item.product.name}</Link>
+                    {item.size && (
+                      <p className="text-[10px] uppercase tracking-widest font-bold text-black/40 mt-1">Size: {item.size}</p>
+                    )}
                   </div>
                   <button onClick={() => handleRemove(item.id)} className="text-gray-400 hover:text-red-500 transition-colors flex-shrink-0 p-1"><Trash2 size={16} /></button>
                 </div>
@@ -75,7 +79,7 @@ export default function CartPage() {
                     <span className="w-10 text-center text-sm font-semibold">{item.quantity}</span>
                     <button onClick={() => handleUpdate(item.id, item.quantity + 1)} disabled={item.quantity >= item.product.stock} className="p-2 hover:bg-gray-50 transition-colors disabled:opacity-40"><Plus size={14} /></button>
                   </div>
-                  <p className="font-bold text-gray-900">${(item.product.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-bold text-gray-900">{formatPrice(item.product.price * item.quantity)}</p>
                 </div>
               </div>
             </div>
@@ -87,21 +91,21 @@ export default function CartPage() {
           <div className="card p-6 sticky top-20">
             <h2 className="font-bold text-lg mb-6">Order Summary</h2>
             <div className="space-y-3 text-sm mb-6">
-              <div className="flex justify-between"><span className="text-gray-600">Subtotal</span><span className="font-medium">${subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Tax (8%)</span><span className="font-medium">${tax.toFixed(2)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Subtotal</span><span className="font-medium">{formatPrice(subtotal)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Tax (8%)</span><span className="font-medium">{formatPrice(tax)}</span></div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
-                <span className={`font-medium ${shipping === 0 ? 'text-green-600' : ''}`}>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                <span className={`font-medium ${shipping === 0 ? 'text-green-600' : ''}`}>{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span>
               </div>
-              {subtotal < 100 && subtotal > 0 && <p className="text-xs text-primary-600 bg-primary-50 px-3 py-2 rounded-lg">Add ${(100 - subtotal).toFixed(2)} more for free shipping!</p>}
+              {subtotal < 100 && subtotal > 0 && <p className="text-xs text-primary-600 bg-primary-50 px-3 py-2 rounded-lg">Add {formatPrice(100 - subtotal)} more for free shipping!</p>}
               <div className="border-t border-gray-100 pt-3 flex justify-between text-base font-bold">
-                <span>Total</span><span>${total.toFixed(2)}</span>
+                <span>Total</span><span>{formatPrice(total)}</span>
               </div>
             </div>
             <button onClick={() => navigate('/checkout')} className="w-full btn-primary flex items-center justify-center gap-2 py-3.5">
               Proceed to Checkout <ArrowRight size={18} />
             </button>
-            <Link to="/products" className="block text-center text-sm text-primary-600 mt-3 hover:underline">Continue Shopping</Link>
+            <Link to="/catalog" className="block text-center text-sm text-primary-600 mt-3 hover:underline">Continue Shopping</Link>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronLeft, Package, Truck, CheckCircle, Clock, XCircle } from 'lucide-react';
 import api from '../api/axios';
 import Spinner from '../components/common/Spinner';
+import { formatPrice } from '../utils/formatPrice';
 
 const statusConfig = {
   PENDING: { color: 'text-yellow-600', bg: 'bg-yellow-50', icon: Clock, label: 'Order Pending' },
@@ -78,9 +79,9 @@ export default function OrderDetailPage() {
                   <img src={item.product?.images?.[0] || 'https://placehold.co/80x80'} alt="" className="w-16 h-16 rounded-xl object-cover" />
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm truncate">{item.product?.name}</p>
-                    <p className="text-gray-500 text-xs">Qty: {item.quantity} × ${item.price.toFixed(2)}</p>
+                    <p className="text-gray-500 text-xs">Qty: {item.quantity} {item.size && `| Size: ${item.size}`} × {formatPrice(item.price)}</p>
                   </div>
-                  <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-bold">{formatPrice(item.price * item.quantity)}</p>
                 </div>
               ))}
             </div>
@@ -104,11 +105,11 @@ export default function OrderDetailPage() {
           <div className="card p-6">
             <h2 className="font-bold text-lg mb-4">Summary</h2>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Subtotal</span><span>${order.subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Tax</span><span>${order.tax.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Shipping</span><span>{order.shipping === 0 ? 'FREE' : `$${order.shipping.toFixed(2)}`}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Subtotal</span><span>{formatPrice(order.subtotal)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Tax</span><span>{formatPrice(order.tax)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Shipping</span><span>{order.shipping === 0 ? 'FREE' : formatPrice(order.shipping)}</span></div>
               <div className="flex justify-between font-bold text-base pt-3 border-t border-gray-100">
-                <span>Total</span><span>${order.total.toFixed(2)}</span>
+                <span>Total</span><span>{formatPrice(order.total)}</span>
               </div>
             </div>
             <div className="mt-4 pt-4 border-t border-gray-100 space-y-2 text-sm">

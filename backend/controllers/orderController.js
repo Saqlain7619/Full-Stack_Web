@@ -27,7 +27,7 @@ exports.createOrder = async (req, res) => {
         shippingAddress,
         paymentMethod,
         notes,
-        items: { create: cart.items.map(item => ({ productId: item.productId, quantity: item.quantity, price: item.product.price })) },
+        items: { create: cart.items.map(item => ({ productId: item.productId, quantity: item.quantity, price: item.product.price, size: item.size })) },
       },
       include: { items: { include: { product: true } } },
     });

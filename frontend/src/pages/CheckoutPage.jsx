@@ -5,6 +5,7 @@ import { CreditCard, Truck, CheckCircle } from 'lucide-react';
 import api from '../api/axios';
 import { selectCartTotal } from '../store/cartSlice';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../utils/formatPrice';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     fullName: user?.name || '', email: user?.email || '', phone: '',
-    address: '', city: '', state: '', zip: '', country: 'US',
+    address: '', city: '', state: '', zip: '', country: 'PK',
     paymentMethod: 'COD',
   });
 
@@ -79,7 +80,7 @@ export default function CheckoutPage() {
               <div><label className="block text-sm font-medium mb-1">ZIP Code</label><input required value={form.zip} onChange={(e) => setForm({...form, zip: e.target.value})} className="input-field" /></div>
               <div><label className="block text-sm font-medium mb-1">Country</label>
                 <select value={form.country} onChange={(e) => setForm({...form, country: e.target.value})} className="input-field">
-                  <option value="US">United States</option><option value="CA">Canada</option><option value="UK">United Kingdom</option><option value="AU">Australia</option>
+                  <option value="PK">Pakistan</option><option value="US">United States</option><option value="UK">United Kingdom</option>
                 </select>
               </div>
             </div>
@@ -115,17 +116,17 @@ export default function CheckoutPage() {
                   <img src={item.product.images?.[0] || 'https://placehold.co/50x50'} alt="" className="w-12 h-12 object-cover rounded-lg" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{item.product.name}</p>
-                    <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                    <p className="text-xs text-gray-500">Qty: {item.quantity} {item.size && `| Size: ${item.size}`}</p>
                   </div>
-                  <p className="text-sm font-bold">${(item.product.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-sm font-bold">{formatPrice(item.product.price * item.quantity)}</p>
                 </div>
               ))}
             </div>
             <div className="border-t border-gray-100 pt-4 space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-gray-600">Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Tax (8%)</span><span>${tax.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-gray-600">Shipping</span><span className={shipping === 0 ? 'text-green-600' : ''}>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span></div>
-              <div className="flex justify-between font-bold text-base pt-2 border-t border-gray-100"><span>Total</span><span>${total.toFixed(2)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Subtotal</span><span>{formatPrice(subtotal)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Tax (8%)</span><span>{formatPrice(tax)}</span></div>
+              <div className="flex justify-between"><span className="text-gray-600">Shipping</span><span className={shipping === 0 ? 'text-green-600' : ''}>{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span></div>
+              <div className="flex justify-between font-bold text-base pt-2 border-t border-gray-100"><span>Total</span><span>{formatPrice(total)}</span></div>
             </div>
             <button type="submit" disabled={loading || !items.length} className="w-full btn-primary mt-6 py-3.5 flex items-center justify-center gap-2">
               {loading ? 'Placing Order...' : <><CheckCircle size={18} />Place Order</>}

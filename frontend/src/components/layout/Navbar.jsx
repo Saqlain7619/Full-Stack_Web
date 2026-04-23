@@ -32,7 +32,7 @@ export default function Navbar() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (search.trim()) {
-      navigate(`/products?search=${encodeURIComponent(search.trim())}`);
+      navigate(`/catalog?search=${encodeURIComponent(search.trim())}`);
       setSearch('');
     }
   };
@@ -71,10 +71,10 @@ export default function Navbar() {
 
           {/* Navigation — desktop */}
           <nav className="hidden lg:flex items-center gap-8">
-            {['Products', 'Featured', 'About Us', 'Contact'].map((item) => (
+            {['Catalog', 'Featured', 'About Us', 'Contact'].map((item) => (
               <Link
                 key={item}
-                to={item === 'Products' ? '/products' : item === 'Featured' ? '/products?featured=true' : item === 'About Us' ? '/about' : '/contact'}
+                to={item === 'Catalog' ? '/catalog' : item === 'Featured' ? '/catalog?featured=true' : item === 'About Us' ? '/about' : '/contact'}
                 className="relative text-[13px] uppercase tracking-widest font-semibold text-black/70 hover:text-black transition-colors after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[1.5px] after:bg-primary-600 after:transition-all hover:after:w-full"
               >
                 {item}
@@ -85,7 +85,7 @@ export default function Navbar() {
           {/* Right side actions */}
           <div className="flex items-center gap-4 ml-auto">
 
-            {/* Search icon (trigger state later if needed, but for now desktop search) */}
+            {/* Search icon (desktop) */}
             <form onSubmit={handleSearch} className="hidden md:flex relative group">
               <input
                 value={search}
@@ -166,19 +166,67 @@ export default function Navbar() {
 
         {/* ── Mobile menu ── */}
         {menuOpen && (
-          <div className="lg:hidden py-6 space-y-4 border-t border-black/5 animate-in fade-in slide-in-from-top-4 duration-300">
-            {['Products', 'Featured', 'About Us', 'Contact'].map((item) => (
-              <Link
-                key={item}
-                to={item === 'Products' ? '/products' : item === 'Featured' ? '/products?featured=true' : item === 'About Us' ? '/about' : '/contact'}
-                className="block text-sm font-bold uppercase tracking-widest text-black/70 hover:text-primary-600"
-              >
-                {item}
-              </Link>
-            ))}
-            {!token && (
-              <Link to="/login" className="block text-sm font-bold uppercase tracking-widest text-primary-600 pt-4">Sign In</Link>
-            )}
+          <div className="lg:hidden py-8 px-6 space-y-10 border-t border-black/5 animate-in fade-in slide-in-from-top-4 duration-500 overflow-y-auto max-h-[calc(100vh-80px)]">
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="relative mt-2">
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search collection..."
+                className="w-full pl-5 pr-12 py-4 bg-luxury-gray border-none rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-600/20"
+              />
+              <button type="submit" className="absolute right-5 top-1/2 -translate-y-1/2 text-black/40">
+                <Search size={20} />
+              </button>
+            </form>
+
+            <div className="space-y-6">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/30">Explore</p>
+              <div className="flex flex-col gap-5">
+                {['Catalog', 'Featured', 'About Us', 'Contact'].map((item) => (
+                  <Link
+                    key={item}
+                    to={item === 'Catalog' ? '/catalog' : item === 'Featured' ? '/catalog?featured=true' : item === 'About Us' ? '/about' : '/contact'}
+                    className="text-2xl font-display font-medium text-black active:text-primary-600 transition-colors"
+                  >
+                    {item}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-10 border-t border-black/10 space-y-8">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/30">Member Area</p>
+              {token ? (
+                <div className="grid grid-cols-1 gap-6">
+                  <Link to="/profile" className="flex items-center gap-4 text-sm font-bold text-black uppercase tracking-[0.1em]">
+                    <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center text-xs font-bold">
+                      {user?.name?.[0]?.toUpperCase()}
+                    </div>
+                    Profile Details
+                  </Link>
+                  <Link to="/orders" className="flex items-center gap-4 text-sm font-bold text-black uppercase tracking-[0.1em]">
+                    <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-black">
+                      <Package size={18} />
+                    </div>
+                    Order History
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-4 text-sm font-bold text-red-600 uppercase tracking-[0.1em] mt-4"
+                  >
+                    <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center text-red-600">
+                      <LogOut size={18} />
+                    </div>
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <Link to="/login" className="flex items-center justify-center w-full bg-black text-white py-4 rounded-2xl text-sm font-bold uppercase tracking-widest shadow-xl active:scale-95 transition-all">
+                  Sign In / Register
+                </Link>
+              )}
+            </div>
           </div>
         )}
       </div>

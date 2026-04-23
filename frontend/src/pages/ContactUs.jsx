@@ -1,227 +1,156 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, Send, MessageSquare, Headphones, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Loader2, ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function ContactUs() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
-  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSending(true);
-    // Simulate API call — apna backend endpoint yahan lagao
-    await new Promise(r => setTimeout(r, 1500));
-    toast.success('Message sent! We\'ll reply within 24 hours.');
-    setForm({ name: '', email: '', subject: '', message: '' });
-    setSending(false);
+    setLoading(true);
+    // Simulate send
+    setTimeout(() => {
+      toast.success('Message sent! We will contact you soon.');
+      setForm({ name: '', email: '', subject: '', message: '' });
+      setLoading(false);
+    }, 1500);
   };
 
-  const contactCards = [
-    {
-      icon: <Mail size={22} />,
-      label: 'Email Us',
-      value: 'hello@shopnow.com',
-      sub: 'Reply within 24 hours',
-      color: '#f97316',
-    },
-    {
-      icon: <Phone size={22} />,
-      label: 'Call Us',
-      value: '+1 (235) 123-4567',
-      sub: 'Mon–Fri, 9am–6pm EST',
-      color: '#fb923c',
-    },
-    {
-      icon: <MapPin size={22} />,
-      label: 'Visit Us',
-      value: '123 Commerce St, NY 10021',
-      sub: 'Open Mon–Sat',
-      color: '#f97316',
-    },
-    {
-      icon: <Clock size={22} />,
-      label: 'Working Hours',
-      value: '9:00 AM – 6:00 PM',
-      sub: 'Monday to Friday',
-      color: '#fb923c',
-    },
-  ];
-
-  const features = [
-    { icon: <MessageSquare size={18} />, title: 'Live Chat', desc: 'Chat with our support team instantly' },
-    { icon: <Headphones size={18} />, title: '24/7 Support', desc: 'Always here when you need us' },
-    { icon: <ShieldCheck size={18} />, title: 'Secure & Private', desc: 'Your data is always protected' },
-  ];
-
   return (
-    <div style={{ background: '#0f0f0f', minHeight: '100vh', color: '#fff', fontFamily: 'inherit' }}>
-
-      {/* ── Hero Banner ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #1a1a1a 0%, #111 50%, #1c0a00 100%)',
-        padding: '80px 24px 60px',
-        textAlign: 'center',
-        borderBottom: '1px solid #2a2a2a',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* Glow */}
-        <div style={{
-          position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)',
-          width: '400px', height: '300px',
-          background: 'radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.3)',
-          padding: '6px 16px', borderRadius: '99px', fontSize: 13, color: '#f97316',
-          marginBottom: 20,
-        }}>
-          <Mail size={13} /> Get In Touch
+    <div className="bg-white min-h-screen text-black font-sans selection:bg-red-100 selection:text-red-600">
+      
+      {/* ── Header ── */}
+      <div className="bg-black text-white pt-32 pb-20 px-6 text-center relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/20 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-white/5 blur-[80px] rounded-full" />
+        
+        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-1.5 rounded-full text-[10px] font-bold text-white uppercase tracking-[0.3em] mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
+           Virtual Concierge
         </div>
-        <h1 style={{ fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 800, marginBottom: 14, letterSpacing: '-1px' }}>
-          We'd love to <span style={{ color: '#f97316' }}>hear from you</span>
+        
+        <h1 className="text-5xl sm:text-7xl font-display font-bold mb-6 tracking-tighter animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-100">
+          Get In <span className="text-red-600 italic">Touch</span>
         </h1>
-        <p style={{ color: '#888', fontSize: 17, maxWidth: 500, margin: '0 auto', lineHeight: 1.7 }}>
-          Have a question, feedback, or just want to say hello? Our team is ready to help you.
+        <p className="max-w-xl mx-auto text-white/40 text-lg font-light leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+          Whether you have a question about our virtual try-on technology or need styling advice, our neural concierges are ready to assist.
         </p>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '60px 24px' }}>
-
-        {/* ── Contact Cards ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 60 }}>
-          {contactCards.map((c) => (
-            <div key={c.label} style={{
-              background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16,
-              padding: '24px 20px', transition: 'border-color 0.2s, transform 0.2s',
-              cursor: 'default',
-            }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#2a2a2a'; e.currentTarget.style.transform = 'translateY(0)'; }}
-            >
-              <div style={{
-                width: 44, height: 44, borderRadius: 12,
-                background: 'rgba(249,115,22,0.12)', color: c.color,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14,
-              }}>{c.icon}</div>
-              <div style={{ fontSize: 12, color: '#666', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{c.label}</div>
-              <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 4 }}>{c.value}</div>
-              <div style={{ fontSize: 13, color: '#666' }}>{c.sub}</div>
+      <div className="max-w-7xl mx-auto px-6 py-24">
+        <div className="grid lg:grid-cols-3 gap-16">
+          
+          {/* Info Columns */}
+          <div className="space-y-12">
+            {[
+              { icon: <Mail size={24} className="text-red-600" />, title: 'Neural Mail', val: 'concierge@fashfit.ai', desc: 'Typical response within 2 hours' },
+              { icon: <Phone size={24} className="text-red-600" />, title: 'Direct Line', val: '+92 300 1234567', desc: 'Mon - Fri, 9am - 6pm PKT' },
+              { icon: <MapPin size={24} className="text-red-600" />, title: 'The Atelier', val: '12-B, Gulberg III, Lahore', desc: 'By appointment only' },
+            ].map((item, i) => (
+              <div key={i} className="flex gap-6 group">
+                <div className="w-16 h-16 bg-luxury-gray rounded-3xl flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:text-white group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:shadow-red-600/20">
+                  {item.icon}
+                </div>
+                <div>
+                  <h4 className="font-bold text-[10px] uppercase tracking-[0.2em] text-black/30 mb-2">{item.title}</h4>
+                  <p className="text-xl font-display font-bold mb-1">{item.val}</p>
+                  <p className="text-sm text-black/40 font-medium">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+            
+            {/* Social Links placeholder */}
+            <div className="pt-8 border-t border-black/5">
+              <h4 className="font-bold text-[10px] uppercase tracking-[0.2em] text-black/30 mb-6">Social Presence</h4>
+              <div className="flex gap-4">
+                {['Instagram', 'Twitter', 'LinkedIn'].map(social => (
+                  <button key={social} className="px-6 py-3 bg-luxury-gray rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                    {social}
+                  </button>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-
-        {/* ── Main Grid: Form + Info ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: 32, alignItems: 'start' }}>
+          </div>
 
           {/* Contact Form */}
-          <div style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 20, padding: '36px 32px' }}>
-            <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 6 }}>Send us a message</h2>
-            <p style={{ color: '#777', fontSize: 14, marginBottom: 28 }}>Fill the form below and we'll get back to you.</p>
-
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                <div>
-                  <label style={labelStyle}>Your Name *</label>
-                  <input required style={inputStyle} placeholder="John Doe"
-                    value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                    onFocus={e => e.target.style.borderColor = '#f97316'}
-                    onBlur={e => e.target.style.borderColor = '#2a2a2a'} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Email Address *</label>
-                  <input required type="email" style={inputStyle} placeholder="john@example.com"
-                    value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                    onFocus={e => e.target.style.borderColor = '#f97316'}
-                    onBlur={e => e.target.style.borderColor = '#2a2a2a'} />
-                </div>
-              </div>
-
-              <div>
-                <label style={labelStyle}>Subject *</label>
-                <input required style={inputStyle} placeholder="How can we help?"
-                  value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })}
-                  onFocus={e => e.target.style.borderColor = '#f97316'}
-                  onBlur={e => e.target.style.borderColor = '#2a2a2a'} />
-              </div>
-
-              <div>
-                <label style={labelStyle}>Message *</label>
-                <textarea required rows={5} style={{ ...inputStyle, resize: 'vertical', minHeight: 120 }}
-                  placeholder="Write your message here..."
-                  value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
-                  onFocus={e => e.target.style.borderColor = '#f97316'}
-                  onBlur={e => e.target.style.borderColor = '#2a2a2a'} />
-              </div>
-
-              <button type="submit" disabled={sending} style={{
-                background: sending ? '#555' : 'linear-gradient(135deg, #f97316, #ea6000)',
-                color: '#fff', border: 'none', borderRadius: 12, padding: '14px 28px',
-                fontWeight: 600, fontSize: 15, cursor: sending ? 'not-allowed' : 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                transition: 'opacity 0.2s',
-              }}>
-                {sending
-                  ? <><span style={{ width: 16, height: 16, border: '2px solid #fff3', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite', display: 'inline-block' }} /> Sending...</>
-                  : <><Send size={16} /> Send Message</>
-                }
-              </button>
-            </form>
+          <div className="lg:col-span-2">
+            <div className="bg-white border border-black/5 p-8 sm:p-12 rounded-[3.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] relative overflow-hidden">
+               <div className="absolute top-0 left-0 w-2 h-full bg-red-600" />
+               <div className="mb-10">
+                 <h2 className="text-3xl font-display font-bold mb-3 tracking-tight">Transmit Message</h2>
+                 <p className="text-black/40 font-medium">Fields marked with an asterisk (*) are mandatory for neural processing.</p>
+               </div>
+               
+               <form onSubmit={handleSubmit} className="space-y-8">
+                 <div className="grid sm:grid-cols-2 gap-8">
+                   <div className="space-y-3">
+                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/60 ml-1">Full Name *</label>
+                     <input 
+                       required 
+                       value={form.name} 
+                       onChange={e => setForm({...form, name: e.target.value})} 
+                       className="w-full bg-luxury-gray border border-transparent px-8 py-5 rounded-[1.5rem] focus:bg-white focus:border-red-600 focus:shadow-xl focus:shadow-red-600/5 outline-none transition-all font-semibold" 
+                       placeholder="Enter your name" 
+                     />
+                   </div>
+                   <div className="space-y-3">
+                     <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/60 ml-1">Email Address *</label>
+                     <input 
+                       required 
+                       type="email" 
+                       value={form.email} 
+                       onChange={e => setForm({...form, email: e.target.value})} 
+                       className="w-full bg-luxury-gray border border-transparent px-8 py-5 rounded-[1.5rem] focus:bg-white focus:border-red-600 focus:shadow-xl focus:shadow-red-600/5 outline-none transition-all font-semibold" 
+                       placeholder="you@domain.com" 
+                     />
+                   </div>
+                 </div>
+                 
+                 <div className="space-y-3">
+                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/60 ml-1">Subject *</label>
+                   <input 
+                     required 
+                     value={form.subject} 
+                     onChange={e => setForm({...form, subject: e.target.value})} 
+                     className="w-full bg-luxury-gray border border-transparent px-8 py-5 rounded-[1.5rem] focus:bg-white focus:border-red-600 focus:shadow-xl focus:shadow-red-600/5 outline-none transition-all font-semibold" 
+                     placeholder="How can we assist you?" 
+                   />
+                 </div>
+                 
+                 <div className="space-y-3">
+                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/60 ml-1">Message Content *</label>
+                   <textarea 
+                     required 
+                     rows={6} 
+                     value={form.message} 
+                     onChange={e => setForm({...form, message: e.target.value})} 
+                     className="w-full bg-luxury-gray border border-transparent px-8 py-6 rounded-[2rem] focus:bg-white focus:border-red-600 focus:shadow-xl focus:shadow-red-600/5 outline-none transition-all font-semibold resize-none" 
+                     placeholder="Describe your inquiry in detail..." 
+                   />
+                 </div>
+                 
+                 <button 
+                   disabled={loading} 
+                   type="submit" 
+                   className="w-full bg-black text-white py-6 rounded-3xl font-bold uppercase tracking-[0.3em] text-[11px] flex items-center justify-center gap-4 hover:bg-red-600 transition-all active:scale-95 shadow-2xl hover:shadow-red-600/40 disabled:opacity-50"
+                 >
+                   {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                   {loading ? 'Processing Transmission...' : 'Establish Connection'}
+                 </button>
+               </form>
+            </div>
           </div>
 
-          {/* Right side info */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-            {/* Why contact us */}
-            <div style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 20, padding: '28px 24px' }}>
-              <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 20 }}>Why contact us?</h3>
-              {features.map(f => (
-                <div key={f.title} style={{ display: 'flex', gap: 14, marginBottom: 18, alignItems: 'flex-start' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(249,115,22,0.12)', color: '#f97316', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{f.icon}</div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 3 }}>{f.title}</div>
-                    <div style={{ fontSize: 13, color: '#777', lineHeight: 1.5 }}>{f.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Map placeholder */}
-            <div style={{
-              background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 20,
-              overflow: 'hidden', height: 200, position: 'relative',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'repeating-linear-gradient(0deg, #1f1f1f 0px, #1f1f1f 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, #1f1f1f 0px, #1f1f1f 1px, transparent 1px, transparent 40px)',
-              }} />
-              <div style={{ position: 'relative', textAlign: 'center' }}>
-                <div style={{ width: 48, height: 48, background: 'rgba(249,115,22,0.15)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', border: '2px solid #f97316' }}>
-                  <MapPin size={22} color="#f97316" />
-                </div>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>123 Commerce St</div>
-                <div style={{ fontSize: 12, color: '#777' }}>New York, NY 10021</div>
-              </div>
-            </div>
-
-          </div>
         </div>
       </div>
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      
+      {/* ── Footer Link ── */}
+      <div className="py-20 text-center border-t border-black/5 bg-luxury-gray/30">
+        <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/20 mb-6">Need immediate help?</p>
+        <button className="text-sm font-display font-bold hover:text-red-600 transition-colors border-b-2 border-red-600 pb-1">
+          Launch Live Concierge
+        </button>
+      </div>
     </div>
   );
 }
-
-const labelStyle = {
-  display: 'block', fontSize: 13, fontWeight: 500, color: '#aaa', marginBottom: 7,
-};
-const inputStyle = {
-  width: '100%', padding: '11px 14px',
-  background: '#111', border: '1px solid #2a2a2a', borderRadius: 10,
-  color: '#fff', fontSize: 14, outline: 'none', transition: 'border-color 0.2s',
-  boxSizing: 'border-box',
-};

@@ -4,7 +4,7 @@ import ProductCard from './ProductCard';
 import Spinner from '../common/Spinner';
 import { Sparkles } from 'lucide-react'; // Added icon
 
-export default function CompleteTheLook({ productId, categorySlug }) {
+export default function CompleteTheLook({ productId, categorySlug, onSelectForLook, selectedItems }) {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,8 +67,14 @@ export default function CompleteTheLook({ productId, categorySlug }) {
       <div className="relative group">
         <div className="flex overflow-x-auto gap-8 pb-10 snap-x hide-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
           {recommendations.map((product) => (
-            <div key={product.id} className="w-[280px] snap-start flex-shrink-0">
+            <div key={product.id} className="w-[280px] snap-start flex-shrink-0 flex flex-col">
               <ProductCard product={product} />
+              <button 
+                onClick={() => onSelectForLook && onSelectForLook(product)}
+                className={`mt-4 w-full py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all ${selectedItems?.some(i => i.id === product.id) ? 'bg-primary-600 text-white shadow-lg' : 'bg-luxury-gray text-black hover:bg-black hover:text-white'}`}
+              >
+                {selectedItems?.some(i => i.id === product.id) ? 'Selected for Look' : 'Try with this'}
+              </button>
             </div>
           ))}
         </div>

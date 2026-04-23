@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Users, ShoppingCart, Package, DollarSign, TrendingUp, Eye } from 'lucide-react';
 import api from '../../api/axios';
 import Spinner from '../../components/common/Spinner';
+import { formatPrice } from '../../utils/formatPrice';
 
 const statusColors = { PENDING:'bg-yellow-100 text-yellow-700', CONFIRMED:'bg-blue-100 text-blue-700', PROCESSING:'bg-purple-100 text-purple-700', SHIPPED:'bg-indigo-100 text-indigo-700', DELIVERED:'bg-green-100 text-green-700', CANCELLED:'bg-red-100 text-red-700' };
 
@@ -20,7 +21,7 @@ export default function AdminDashboard() {
     { label: 'Total Users', value: stats?.totalUsers, icon: Users, color: 'bg-blue-500', change: '+12%' },
     { label: 'Total Orders', value: stats?.totalOrders, icon: ShoppingCart, color: 'bg-primary-600', change: '+8%' },
     { label: 'Products', value: stats?.totalProducts, icon: Package, color: 'bg-purple-500', change: '+3%' },
-    { label: 'Revenue', value: `$${(stats?.totalRevenue || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, icon: DollarSign, color: 'bg-green-500', change: '+15%' },
+    { label: 'Revenue', value: formatPrice(stats?.totalRevenue || 0), icon: DollarSign, color: 'bg-green-500', change: '+15%' },
   ];
 
   return (
@@ -66,7 +67,7 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className={`badge ${statusColors[order.status] || 'bg-gray-100 text-gray-600'}`}>{order.status}</span>
-                  <span className="font-bold text-sm">${order.total?.toFixed(2)}</span>
+                  <span className="font-bold text-sm">{formatPrice(order.total)}</span>
                 </div>
               </div>
             ))}
@@ -87,7 +88,7 @@ export default function AdminDashboard() {
                   <p className="font-medium text-sm truncate">{product.name}</p>
                   <p className="text-xs text-gray-500">{product.sold} sold</p>
                 </div>
-                <span className="font-bold text-sm">${product.price?.toFixed(2)}</span>
+                <span className="font-bold text-sm">{formatPrice(product.price)}</span>
               </div>
             ))}
           </div>

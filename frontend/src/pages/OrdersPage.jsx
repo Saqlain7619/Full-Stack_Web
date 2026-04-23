@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Package, ChevronRight, ShoppingBag } from 'lucide-react';
 import api from '../api/axios';
 import Spinner from '../components/common/Spinner';
+import { formatPrice } from '../utils/formatPrice';
 
 const statusColors = {
   PENDING: 'bg-yellow-100 text-yellow-700',
@@ -63,7 +64,7 @@ export default function OrdersPage() {
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-gray-500">Total</span>
-                <span className="font-bold text-lg">${order.total.toFixed(2)}</span>
+                <span className="font-bold text-lg">{formatPrice(order.total)}</span>
               </div>
             </Link>
           ))}

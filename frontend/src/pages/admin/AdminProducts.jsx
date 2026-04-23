@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2, Search, X, Package } from 'lucide-react';
 import api from '../../api/axios';
 import Spinner from '../../components/common/Spinner';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../../utils/formatPrice';
 
 // ✅ FIX 1: Yeh function local path ko full URL mein convert karta hai
 const getImageUrl = (path) => {
@@ -17,8 +18,9 @@ const getImageUrl = (path) => {
 const emptyForm = {
   name: '', description: '', price: '', comparePrice: '',
   categoryId: '', stock: '', tags: '', featured: false, active: true,
-  images: null, // ✅ FIX 2: empty string ki jagah null
-  recommendations: [] // Added for Complete The Look
+  images: null,
+  avatarImage: null, // New field for static try-on
+  recommendations: []
 };
 
 export default function AdminProducts() {
@@ -88,6 +90,7 @@ export default function AdminProducts() {
       featured: p.featured,
       active: p.active,
       images: null,
+      avatarImage: null,
       recommendations: [],
     };
     
@@ -131,6 +134,11 @@ export default function AdminProducts() {
         Array.from(form.images).forEach((file) => {
           formData.append('images', file);
         });
+      }
+
+      // Append Avatar Image
+      if (form.avatarImage) {
+        formData.append('avatarImage', form.avatarImage);
       }
 
       const config = { headers: { 'Content-Type': 'multipart/form-data' } };
@@ -230,7 +238,7 @@ export default function AdminProducts() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-600">{p.category?.name}</td>
-                    <td className="px-4 py-3 font-semibold">${p.price.toFixed(2)}</td>
+                    <td className="px-4 py-3 font-semibold">{formatPrice(p.price)}</td>
                     <td className="px-4 py-3">
                       <span className={`badge ${
                         p.stock === 0 ? 'bg-red-100 text-red-700'
@@ -303,11 +311,11 @@ export default function AdminProducts() {
                   <textarea required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} className="input-field resize-none" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Price *</label>
+                  <label className="block text-sm font-medium mb-1">Price (Rs.) *</label>
                   <input type="number" required min="0" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="input-field" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Compare Price</label>
+                  <label className="block text-sm font-medium mb-1">Compare Price (Rs.)</label>
                   <input type="number" min="0" step="0.01" value={form.comparePrice} onChange={(e) => setForm({ ...form, comparePrice: e.target.value })} className="input-field" />
                 </div>
                 <div>
@@ -323,6 +331,7 @@ export default function AdminProducts() {
                 </div>
 
                 {/* ✅ FIX 5: Max 4 images, optional */}
+                {/* Images Upload */}
                 <div className="sm:col-span-2">
                   <label className="block text-sm font-medium mb-1">
                     Images{' '}
@@ -359,7 +368,7 @@ export default function AdminProducts() {
                     </div>
                   )}
 
-                  {/* ✅ FIX 6: Edit mode mein existing images bhi dikhao */}
+                  {/* Edit mode mein existing images bhi dikhao */}
                   {editing && editing.images?.length > 0 && !form.images && (
                     <div className="mt-2">
                       <p className="text-xs text-gray-500 mb-1">Current images:</p>
@@ -374,6 +383,45 @@ export default function AdminProducts() {
                           />
                         ))}
                       </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Avatar Try-On Image Upload */}
+                <div className="sm:col-span-2 p-4 bg-primary-50/30 rounded-2xl border border-primary-100">
+                  <label className="block text-sm font-bold text-primary-900 mb-1">
+                    Avatar Try-On Image
+                    <span className="text-primary-400 font-normal ml-2">(for virtual try-on simulation)</span>
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setForm({ ...form, avatarImage: e.target.files[0] })}
+                    className="input-field border-primary-200 focus:ring-primary-500"
+                  />
+                  <p className="text-xs text-primary-600/60 mt-1">Upload an image of a model wearing this item</p>
+
+                  {/* Avatar preview */}
+                  {form.avatarImage && (
+                    <div className="mt-3">
+                      <p className="text-xs font-bold text-primary-700 mb-1">New Avatar Preview:</p>
+                      <img
+                        src={URL.createObjectURL(form.avatarImage)}
+                        className="w-32 h-40 object-cover rounded-xl border-2 border-primary-200 shadow-sm"
+                        alt="avatar-preview"
+                      />
+                    </div>
+                  )}
+
+                  {editing && editing.avatarImage && !form.avatarImage && (
+                    <div className="mt-3">
+                      <p className="text-xs font-bold text-primary-700 mb-1">Current Avatar:</p>
+                      <img
+                        src={getImageUrl(editing.avatarImage)}
+                        className="w-32 h-40 object-cover rounded-xl border-2 border-primary-100 opacity-80"
+                        alt="current-avatar"
+                        onError={(e) => { e.target.src = 'https://placehold.co/120x160?text=No+Avatar'; }}
+                      />
                     </div>
                   )}
                 </div>

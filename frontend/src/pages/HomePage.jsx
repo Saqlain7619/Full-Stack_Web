@@ -7,7 +7,7 @@ import Spinner from '../components/common/Spinner';
 import { getImageUrl } from '../utils/imageUrl';
 
 const features = [
-  { icon: Truck, title: 'Free Shipping', desc: 'On orders over $100' },
+  { icon: Truck, title: 'Free Shipping', desc: 'On orders over Rs. 5000' },
   { icon: Shield, title: 'Secure Payment', desc: '100% protected' },
   { icon: RefreshCw, title: '30-Day Returns', desc: 'Hassle-free returns' },
   { icon: Headphones, title: '24/7 Support', desc: 'Always here to help' },
@@ -49,7 +49,7 @@ export default function HomePage() {
               Est. 2024 • Premium Collection
             </div>
             
-            <h1 className="font-display font-bold text-5xl sm:text-7xl lg:text-8xl text-white mb-6 leading-none">
+            <h1 className="font-display font-bold text-4xl sm:text-7xl lg:text-8xl text-white mb-6 leading-none">
               Modern <br />
               <span className="text-primary-600">Elegance.</span>
             </h1>
@@ -59,11 +59,11 @@ export default function HomePage() {
             </p>
             
             <div className="flex flex-wrap gap-5">
-              <Link to="/products" className="btn-primary flex items-center gap-3 group">
+              <Link to="/catalog" className="btn-primary flex items-center gap-3 group">
                 Shop Collection 
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/products?featured=true" className="btn-secondary !bg-transparent !text-white !border-white/30 hover:!bg-white hover:!text-black group">
+              <Link to="/catalog?featured=true" className="btn-secondary !bg-transparent !text-white !border-white/30 hover:!bg-white hover:!text-black group">
                 View Lookbook
               </Link>
             </div>
@@ -100,7 +100,7 @@ export default function HomePage() {
             <p className="text-primary-600 font-medium text-sm mb-1">Browse by</p>
             <h2 className="font-display font-bold text-3xl text-gray-900">Categories</h2>
           </div>
-          <Link to="/products" className="flex items-center gap-1 text-primary-600 font-medium text-sm hover:gap-2 transition-all">
+          <Link to="/catalog" className="flex items-center gap-1 text-primary-600 font-medium text-sm hover:gap-2 transition-all">
             View all <ChevronRight size={16} />
           </Link>
         </div>
@@ -111,14 +111,19 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             {(categories || []).slice(0, 4).map((cat) => (
-              <Link key={cat.id} to={`/products?category=${cat.slug}`}
+              <Link key={cat.id} to={`/catalog?category=${cat.slug}`}
                 className="group card relative overflow-hidden aspect-[4/5] hover:shadow-xl transition-all duration-300 hover:-translate-y-2 rounded-2xl">
                 <img src={cat.image ? getImageUrl(cat.image) : 'https://placehold.co/400x500?text=' + cat.name} alt={cat.name}
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                  <h3 className="text-white font-display font-bold text-lg sm:text-xl leading-tight mb-1">{cat.name}</h3>
-                  <p className="text-gray-300 text-sm font-medium">{cat._count?.products || 0} items</p>
+                <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+                  <h3 className="text-white font-display font-bold text-xl sm:text-2xl leading-tight mb-2">{cat.name}</h3>
+                  {cat.description && (
+                    <p className="text-white/80 text-xs sm:text-sm mb-3 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-light leading-relaxed">
+                      {cat.description}
+                    </p>
+                  )}
+                  <p className="text-primary-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest">{cat._count?.products || 0} items</p>
                 </div>
               </Link>
             ))}
@@ -134,7 +139,7 @@ export default function HomePage() {
               <p className="text-primary-600 font-medium text-sm mb-1">Handpicked for you</p>
               <h2 className="font-display font-bold text-3xl text-gray-900">Featured Products</h2>
             </div>
-            <Link to="/products?featured=true" className="flex items-center gap-1 text-primary-600 font-medium text-sm hover:gap-2 transition-all">
+            <Link to="/catalog?featured=true" className="flex items-center gap-1 text-primary-600 font-medium text-sm hover:gap-2 transition-all">
               View all <ChevronRight size={16} />
             </Link>
           </div>

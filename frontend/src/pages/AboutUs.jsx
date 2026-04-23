@@ -16,234 +16,127 @@ const values = [
 ];
 
 const team = [
-  { name: 'Alex Morgan', role: 'CEO & Founder', initials: 'AM', color: '#f97316' },
-  { name: 'Sarah Chen', role: 'Head of Product', initials: 'SC', color: '#fb923c' },
-  { name: 'James Wilson', role: 'Lead Developer', initials: 'JW', color: '#f97316' },
-  { name: 'Priya Patel', role: 'Customer Success', initials: 'PP', color: '#fb923c' },
+  { name: 'Muhammad Zain ul Abideen', role: 'Founding Member', initials: 'MZ', color: '#000' },
+  { name: 'Laiba Amjad', role: 'Design Lead', initials: 'LA', color: '#8b0000' },
+  { name: 'Laiba Arif', role: 'Creative Director', initials: 'LA', color: '#000' },
+  { name: 'Attiba Irshad', role: 'Brand Strategist', initials: 'AI', color: '#8b0000' },
+  { name: 'Eman Aftab', role: 'Product Manager', initials: 'EA', color: '#000' },
+  { name: 'Maham Masud', role: 'Operations Head', initials: 'MM', color: '#8b0000' },
+  { name: 'Bisma', role: 'Customer Experience', initials: 'B', color: '#000' },
 ];
 
 const timeline = [
-  { year: '2020', title: 'Founded', desc: 'ShopNow launched with a vision to make quality products accessible to everyone.' },
-  { year: '2021', title: 'First 10K Users', desc: 'Reached 10,000 customers in just 8 months through word of mouth.' },
-  { year: '2022', title: 'Expanded Catalog', desc: 'Grew from 500 to 5,000+ products across 20+ categories.' },
-  { year: '2024', title: 'Going Global', desc: 'Now serving customers in 30+ countries with localized experiences.' },
+  { year: '2022', title: 'The Vision', desc: 'Fash Fit was conceived as a bridge between technology and high fashion.' },
+  { year: '2023', title: 'AI Integration', desc: 'Launched our proprietary virtual try-on system to revolutionize selection.' },
+  { year: '2024', title: 'Market Leader', desc: 'Became the go-to platform for tech-forward fashion enthusiasts.' },
+  { year: '2025', title: 'Global Expansion', desc: 'Bringing the fitting room to every smartphone on the planet.' },
 ];
 
 export default function AboutUs() {
   return (
-    <div style={{ background: '#0f0f0f', minHeight: '100vh', color: '#fff', fontFamily: 'inherit' }}>
+    <div className="bg-white min-h-screen text-black font-sans selection:bg-primary-50 selection:text-primary-600">
 
       {/* ── Hero ── */}
-      <div style={{
-        background: 'linear-gradient(135deg, #1a1a1a 0%, #111 40%, #1c0a00 100%)',
-        padding: '90px 24px 70px',
-        textAlign: 'center',
-        borderBottom: '1px solid #2a2a2a',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          position: 'absolute', top: '-80px', left: '50%', transform: 'translateX(-50%)',
-          width: '500px', height: '400px',
-          background: 'radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: 'rgba(249,115,22,0.12)', border: '1px solid rgba(249,115,22,0.3)',
-          padding: '6px 16px', borderRadius: '99px', fontSize: 13, color: '#f97316',
-          marginBottom: 24, position: 'relative',
-        }}>
-          <ShoppingBag size={13} /> Our Story
+      <div className="relative pt-32 pb-20 px-6 text-center overflow-hidden bg-white border-b border-black/5">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full opacity-5 pointer-events-none bg-[radial-gradient(circle,rgba(139,0,0,0.2)_0%,transparent_70%)]" />
+        
+        <div className="inline-flex items-center gap-2 bg-primary-50 border border-primary-100 px-4 py-1.5 rounded-full text-xs font-bold text-primary-600 uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
+          <ShoppingBag size={12} /> Our Legacy
         </div>
-        <h1 style={{ fontSize: 'clamp(34px, 5vw, 58px)', fontWeight: 800, marginBottom: 18, letterSpacing: '-1.5px', position: 'relative' }}>
-          We're on a mission to<br /><span style={{ color: '#f97316' }}>redefine shopping</span>
+        
+        <h1 className="text-5xl sm:text-7xl font-display font-bold mb-6 tracking-tighter leading-[0.95] animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-100">
+          Where <span className="text-primary-600 italic">Style</span> Meets<br />Neural Technology
         </h1>
-        <p style={{ color: '#888', fontSize: 17, maxWidth: 560, margin: '0 auto 36px', lineHeight: 1.8, position: 'relative' }}>
-          ShopNow started with one simple idea — everyone deserves access to great products at fair prices, with an experience that feels personal.
+        
+        <p className="max-w-2xl mx-auto text-black/60 text-lg sm:text-xl font-light leading-relaxed mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+          Fash Fit is more than a store. It's a digital atelier dedicated to the perfect fit, 
+          leveraging AI to ensure you look your best before you even press buy.
         </p>
-        <Link to="/products" style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          background: 'linear-gradient(135deg, #f97316, #ea6000)',
-          color: '#fff', padding: '13px 28px', borderRadius: 12,
-          fontWeight: 600, fontSize: 15, textDecoration: 'none',
-          position: 'relative',
-        }}>
-          Explore Products <ArrowRight size={16} />
+        
+        <Link to="/catalog" className="btn-primary !bg-black hover:!bg-primary-600 !px-10 !py-5 !rounded-full !text-xs transition-all duration-500 shadow-2xl hover:scale-105 active:scale-95 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
+          Explore the Catalog <ArrowRight size={16} className="ml-2 inline" />
         </Link>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '70px 24px' }}>
+      <div className="max-w-7xl mx-auto px-6 py-24">
 
         {/* ── Stats ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 80 }}>
-          {stats.map((s) => (
-            <div key={s.label} style={{
-              background: 'linear-gradient(135deg, #1a1a1a, #161616)',
-              border: '1px solid #2a2a2a', borderRadius: 16, padding: '28px 20px',
-              textAlign: 'center', transition: 'border-color 0.2s',
-            }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2a2a'}
-            >
-              <div style={{ width: 48, height: 48, background: 'rgba(249,115,22,0.12)', color: '#f97316', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>{s.icon}</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: '#f97316', marginBottom: 4 }}>{s.value}</div>
-              <div style={{ fontSize: 13, color: '#777' }}>{s.label}</div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-32">
+          {stats.map((s, i) => (
+            <div key={s.label} className="group p-8 bg-white border border-black/5 rounded-[2rem] text-center hover:border-primary-600/20 hover:shadow-2xl transition-all duration-700">
+              <div className="w-12 h-12 bg-primary-50 text-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform">{s.icon}</div>
+              <div className="text-4xl font-display font-bold mb-2 tracking-tighter">{s.value}</div>
+              <div className="text-[10px] uppercase tracking-widest font-bold text-black/30">{s.label}</div>
             </div>
           ))}
         </div>
 
-        {/* ── Story Section ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center', marginBottom: 80 }}>
-          <div>
-            <div style={{ fontSize: 12, color: '#f97316', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12 }}>Who We Are</div>
-            <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 18, letterSpacing: '-0.5px', lineHeight: 1.2 }}>
-              Built by shoppers,<br />for shoppers
-            </h2>
-            <p style={{ color: '#888', lineHeight: 1.8, marginBottom: 16, fontSize: 15 }}>
-              We were frustrated with the existing shopping experience — slow sites, unreliable sellers, and hidden fees. So we built ShopNow to be everything we wished existed.
-            </p>
-            <p style={{ color: '#888', lineHeight: 1.8, fontSize: 15 }}>
-              Today, ShopNow serves over 50,000 customers across the globe. Our team of passionate builders works every day to make your shopping experience faster, smarter, and more enjoyable.
-            </p>
+        {/* ── Team Grid (Requested Upgrade) ── */}
+        <div className="mb-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tight mb-4">The Creative Force</h2>
+            <p className="text-black/40 font-medium uppercase tracking-[0.2em] text-[11px]">The visionaries behind Fash Fit</p>
           </div>
-
-          {/* Visual card */}
-          <div style={{
-            background: 'linear-gradient(135deg, #1a1a1a, #1c0a00)',
-            border: '1px solid #2a2a2a', borderRadius: 20, padding: '36px',
-            position: 'relative', overflow: 'hidden',
-          }}>
-            <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, background: 'radial-gradient(circle, rgba(249,115,22,0.2), transparent)', borderRadius: '50%' }} />
-            {[
-              { label: 'Orders Delivered', val: '120,000+' },
-              { label: 'Products In Stock', val: '10,000+' },
-              { label: 'Countries Served', val: '30+' },
-              { label: 'Years in Business', val: '4+' },
-            ].map((item, i) => (
-              <div key={i} style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                padding: '14px 0',
-                borderBottom: i < 3 ? '1px solid #2a2a2a' : 'none',
-              }}>
-                <span style={{ color: '#888', fontSize: 14 }}>{item.label}</span>
-                <span style={{ color: '#f97316', fontWeight: 700, fontSize: 16 }}>{item.val}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Values ── */}
-        <div style={{ marginBottom: 80 }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ fontSize: 12, color: '#f97316', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 }}>What Drives Us</div>
-            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.5px' }}>Our Core Values</h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 18 }}>
-            {values.map((v) => (
-              <div key={v.title} style={{
-                background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16,
-                padding: '26px 22px', transition: 'border-color 0.2s, transform 0.2s',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = '#2a2a2a'; e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
-                <div style={{ width: 42, height: 42, borderRadius: 11, background: 'rgba(249,115,22,0.12)', color: '#f97316', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>{v.icon}</div>
-                <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 8 }}>{v.title}</div>
-                <div style={{ color: '#777', fontSize: 14, lineHeight: 1.7 }}>{v.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Timeline ── */}
-        <div style={{ marginBottom: 80 }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ fontSize: 12, color: '#f97316', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 }}>Our Journey</div>
-            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.5px' }}>How We Got Here</h2>
-          </div>
-          <div style={{ position: 'relative' }}>
-            {/* Line */}
-            <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 1, background: '#2a2a2a', transform: 'translateX(-50%)' }} />
-            {timeline.map((t, i) => (
-              <div key={i} style={{
-                display: 'flex', justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end',
-                marginBottom: 32, position: 'relative',
-              }}>
-                {/* Dot */}
-                <div style={{
-                  position: 'absolute', left: '50%', top: 20, transform: 'translate(-50%, -50%)',
-                  width: 14, height: 14, background: '#f97316', borderRadius: '50%',
-                  border: '3px solid #0f0f0f', zIndex: 1,
-                }} />
-                <div style={{
-                  width: '44%', background: '#1a1a1a', border: '1px solid #2a2a2a',
-                  borderRadius: 14, padding: '20px 22px',
-                  marginLeft: i % 2 === 0 ? 0 : 'auto',
-                  marginRight: i % 2 === 0 ? 'auto' : 0,
-                }}>
-                  <div style={{ color: '#f97316', fontWeight: 700, fontSize: 13, marginBottom: 6 }}>{t.year}</div>
-                  <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 6 }}>{t.title}</div>
-                  <div style={{ color: '#777', fontSize: 13, lineHeight: 1.6 }}>{t.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Team ── */}
-        <div style={{ marginBottom: 60 }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ fontSize: 12, color: '#f97316', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 }}>The People</div>
-            <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.5px' }}>Meet Our Team</h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {team.map((m) => (
-              <div key={m.name} style={{
-                background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16,
-                padding: '28px 20px', textAlign: 'center', transition: 'border-color 0.2s',
-              }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
-                onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2a2a'}
-              >
-                <div style={{
-                  width: 64, height: 64, borderRadius: '50%', margin: '0 auto 14px',
-                  background: `rgba(249,115,22,0.15)`, border: `2px solid ${m.color}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 20, fontWeight: 700, color: m.color,
-                }}>{m.initials}</div>
-                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{m.name}</div>
-                <div style={{ fontSize: 13, color: '#777' }}>{m.role}</div>
+              <div key={m.name} className="group bg-white border border-black/5 p-8 rounded-[2rem] text-center transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+                <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-2xl font-bold border-2 transition-all duration-500 group-hover:scale-110" style={{ borderColor: m.color, color: m.color, backgroundColor: `${m.color}08` }}>
+                  {m.initials}
+                </div>
+                <h3 className="font-bold text-lg mb-1">{m.name}</h3>
+                <p className="text-xs font-bold uppercase tracking-widest text-black/30">{m.role}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* ── CTA Banner ── */}
-        <div style={{
-          background: 'linear-gradient(135deg, #1c0a00, #2a1000)',
-          border: '1px solid rgba(249,115,22,0.3)',
-          borderRadius: 20, padding: '48px 36px', textAlign: 'center',
-        }}>
-          <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>Ready to start shopping?</h2>
-          <p style={{ color: '#888', fontSize: 15, marginBottom: 28 }}>Join 50,000+ happy customers and discover amazing products today.</p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/products" style={{
-              background: 'linear-gradient(135deg, #f97316, #ea6000)',
-              color: '#fff', padding: '12px 28px', borderRadius: 12,
-              fontWeight: 600, fontSize: 15, textDecoration: 'none',
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-            }}>
-              Shop Now <ArrowRight size={16} />
-            </Link>
-            <Link to="/contact" style={{
-              background: 'transparent', color: '#f97316',
-              border: '1px solid rgba(249,115,22,0.4)',
-              padding: '12px 28px', borderRadius: 12,
-              fontWeight: 600, fontSize: 15, textDecoration: 'none',
-            }}>
-              Contact Us
-            </Link>
+        {/* ── Core Values ── */}
+        <div className="mb-32 grid lg:grid-cols-2 gap-20 items-center">
+          <div>
+             <h2 className="text-4xl sm:text-5xl font-display font-bold tracking-tighter mb-8 leading-tight">
+               Built with <span className="text-primary-600">integrity</span>,<br />designed for precision.
+             </h2>
+             <p className="text-black/60 text-lg leading-relaxed mb-10 font-light">
+               Our commitment goes beyond fashion. We aim to reduce the carbon footprint of returns by providing highly accurate AI try-on tools that guarantee satisfaction.
+             </p>
+             <div className="grid sm:grid-cols-2 gap-8">
+               {values.map(v => (
+                 <div key={v.title}>
+                   <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center mb-4">{v.icon}</div>
+                   <h4 className="font-bold mb-2">{v.title}</h4>
+                   <p className="text-sm text-black/40 leading-relaxed">{v.desc}</p>
+                 </div>
+               ))}
+             </div>
+          </div>
+          <div className="relative">
+            <div className="aspect-square bg-luxury-gray rounded-[3rem] overflow-hidden">
+               <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1000&auto=format&fit=crop" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000" alt="Fashion" />
+            </div>
+            <div className="absolute -bottom-10 -left-10 bg-primary-600 text-white p-10 rounded-[2rem] shadow-2xl hidden sm:block">
+              <p className="text-4xl font-display font-bold">100%</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest opacity-80">Precision Guarantee</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Journey ── */}
+        <div className="bg-black text-white rounded-[4rem] p-12 sm:p-24 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-primary-600/10 blur-[120px] rounded-full" />
+          <div className="max-w-2xl">
+            <h2 className="text-4xl sm:text-5xl font-display font-bold mb-16">The Journey</h2>
+            <div className="space-y-12">
+              {timeline.map((t, i) => (
+                <div key={i} className="flex gap-8 group">
+                  <span className="text-primary-600 font-bold font-display text-2xl">{t.year}</span>
+                  <div>
+                    <h4 className="text-xl font-bold mb-2 group-hover:text-primary-500 transition-colors">{t.title}</h4>
+                    <p className="text-white/40 leading-relaxed text-sm">{t.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

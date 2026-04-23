@@ -83,7 +83,7 @@ export default function ProductsPage() {
             <span className="text-[10px] uppercase tracking-widest font-bold text-primary-600">Collection</span>
           </div>
           <h1 className="font-display font-bold text-4xl sm:text-5xl text-black">
-            {currentFeatured ? 'The Selected' : (currentCategory ? categories.find(c => c.slug === currentCategory)?.name : 'All Collection')}
+            {currentFeatured ? 'The Selected' : (currentCategory ? categories.find(c => c.slug === currentCategory)?.name : 'Catalog')}
           </h1>
           {currentSearch && <p className="text-black/40 text-sm mt-3 font-medium">Results for "{currentSearch}"</p>}
         </div>
@@ -138,11 +138,11 @@ export default function ProductsPage() {
               <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-black mb-6">Price Spectrum</h3>
               <div className="flex items-center gap-4">
                 <div className="relative flex-1 group">
-                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-black/20 group-focus-within:text-primary-600">$</span>
+                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-black/20 group-focus-within:text-primary-600">Rs.</span>
                    <input type="number" placeholder="Min" value={currentMin} onChange={(e) => setParam('minPrice', e.target.value)} className="w-full pl-8 pr-4 py-3 bg-luxury-gray border border-transparent rounded-xl text-xs font-bold focus:outline-none focus:bg-white focus:border-primary-600 transition-all" />
                 </div>
                 <div className="relative flex-1 group">
-                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-black/20 group-focus-within:text-primary-600">$</span>
+                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-black/20 group-focus-within:text-primary-600">Rs.</span>
                    <input type="number" placeholder="Max" value={currentMax} onChange={(e) => setParam('maxPrice', e.target.value)} className="w-full pl-8 pr-4 py-3 bg-luxury-gray border border-transparent rounded-xl text-xs font-bold focus:outline-none focus:bg-white focus:border-primary-600 transition-all" />
                 </div>
               </div>

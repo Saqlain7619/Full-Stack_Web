@@ -10,10 +10,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
-// ✅ FIX 1: Static files PEHLE lagao — Helmet se pehle
-
-app.use('/uploads', express.static('uploads'));
-
+// Serve static files from the 'uploads' directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res) => {
     res.set('Cross-Origin-Resource-Policy', 'cross-origin');
@@ -39,11 +36,6 @@ app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 200 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Logging
-app.use((req, res, next) => {
-  if (req.url.includes('try-on')) console.log(`[TRY-ON] Incoming ${req.method} request to ${req.url}`);
-  next();
-});
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 // Routes
@@ -56,7 +48,6 @@ app.use('/api/reviews', require('./routes/reviewRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/payments', require('./routes/paymentRoutes'));
 app.use('/api/recommendations', require('./routes/recommendationRoutes'));
-app.use('/api/try-on', require('./routes/tryOnRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
@@ -65,7 +56,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Dat
 app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 
 // Error handler
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
+
 
 app.use(errorHandler);
 
