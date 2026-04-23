@@ -84,8 +84,8 @@ exports.createProduct = async (req, res) => {
     return res.status(400).json({ success: false, message: 'Maximum 4 images allowed' });
   }
 
-  const images = imageFiles.map(file => file.path.replace(/\\/g, '/'));
-  const avatarImage = avatarFiles.length > 0 ? avatarFiles[0].path.replace(/\\/g, '/') : null;
+  const images = imageFiles.map(file => file?.path?.replace(/\\/g, '/') || '').filter(Boolean);
+  const avatarImage = avatarFiles.length > 0 ? avatarFiles[0]?.path?.replace(/\\/g, '/') : null;
 
   const tags = parseTags(req.body.tags);
   const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') + '-' + Date.now();
@@ -127,11 +127,11 @@ exports.updateProduct = async (req, res) => {
 
   if (imageFiles && imageFiles.length > 0) {
     if (imageFiles.length > 4) return res.status(400).json({ success: false, message: 'Maximum 4 images allowed' });
-    data.images = imageFiles.map(file => file.path.replace(/\\/g, '/'));
+    data.images = imageFiles.map(file => file?.path?.replace(/\\/g, '/') || '').filter(Boolean);
   }
 
   if (avatarFiles && avatarFiles.length > 0) {
-    data.avatarImage = avatarFiles[0].path.replace(/\\/g, '/');
+    data.avatarImage = avatarFiles[0]?.path?.replace(/\\/g, '/');
   }
 
   const product = await prisma.product.update({ where: { id: req.params.id }, data, include: { category: true } });

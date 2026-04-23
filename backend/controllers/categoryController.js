@@ -19,7 +19,7 @@ exports.getCategory = async (req, res) => {
 exports.createCategory = async (req, res) => {
   const { name, description } = req.body;
   const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-  const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
+  const image = req.file ? req.file.path?.replace(/\\/g, '/') : null;
 
   const category = await prisma.category.create({
     data: { name, slug, description, image }
@@ -34,7 +34,7 @@ exports.updateCategory = async (req, res) => {
     data.name = name;
     data.slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
   }
-  if (req.file) data.image = req.file.path.replace(/\\/g, '/');
+  if (req.file) data.image = req.file.path?.replace(/\\/g, '/');
 
   const category = await prisma.category.update({
     where: { id: req.params.id }, data

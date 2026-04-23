@@ -1,6 +1,12 @@
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
+const fs = require('fs');
+
+// Ensure uploads directory exists for local fallback
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads', { recursive: true });
+}
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -12,8 +18,7 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: {
     folder: 'ecommerce/products',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-    transformation: [{ width: 800, height: 800, crop: 'limit' }],
+    transformation: [{ width: 1200, height: 1200, crop: 'limit' }],
   },
 });
 
@@ -27,6 +32,6 @@ const localStorage = multer.diskStorage({
 
 const upload = process.env.CLOUDINARY_CLOUD_NAME
   ? multer({ storage })
-  : multer({ storage: localStorage, limits: { fileSize: 5 * 1024 * 1024 } });
+  : multer({ storage: localStorage, limits: { fileSize: 10 * 1024 * 1024 } });
 
 module.exports = { cloudinary, upload };
