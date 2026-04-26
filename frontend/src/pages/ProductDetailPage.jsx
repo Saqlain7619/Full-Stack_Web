@@ -197,7 +197,7 @@ export default function ProductDetailPage() {
                   <ChevronLeft size={20} className="rotate-180" />
                 </button>
               </div>
-              <AvatarPreview product={product} lookItems={lookItems} />
+              <AvatarPreview product={product} lookItems={lookItems} selectedSize={selectedSize} />
             </div>
           </div>
         )}

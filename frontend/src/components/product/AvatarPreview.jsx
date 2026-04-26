@@ -11,7 +11,7 @@ const getImageUrl = (path) => {
   return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${cleanPath}`;
 };
 
-export default function AvatarPreview({ product, lookItems = [] }) {
+export default function AvatarPreview({ product, lookItems = [], selectedSize }) {
   const dispatch = useDispatch();
   const { token } = useSelector((s) => s.auth);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -47,15 +47,17 @@ export default function AvatarPreview({ product, lookItems = [] }) {
 
   const handleCompleteLook = async () => {
     if (!token) { toast.error('Please login to checkout'); return; }
+    if (!selectedSize) { toast.error('Please select a size first'); return; }
     
     setIsAddingAll(true);
     try {
-      // Add main product
-      await dispatch(addToCart({ productId: product.id, quantity: 1, size: 'M' })).unwrap(); // Default size for look? Or just main product size
+      // Add main product with selected size
+      await dispatch(addToCart({ productId: product.id, quantity: 1, size: selectedSize })).unwrap();
       
-      // Add all look items
+      // Add all look items with fallback sizes
       for (const item of lookItems) {
-        await dispatch(addToCart({ productId: item.id, quantity: 1, size: item.category?.name?.toLowerCase()?.includes('shoe') ? '8' : 'M' })).unwrap();
+        const itemSize = item.category?.name?.toLowerCase()?.includes('shoe') ? '8' : 'M';
+        await dispatch(addToCart({ productId: item.id, quantity: 1, size: itemSize })).unwrap();
       }
       
       toast.success('Complete Look added to cart!');
