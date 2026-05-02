@@ -152,3 +152,82 @@ exports.deleteProduct = async (req, res) => {
 
   res.json({ success: true, message: 'Product permanently deleted' });
 };
+
+exports.getRecommendationOptions = async (req, res) => {
+  const { categoryId } = req.params;
+  
+  try {
+    const category = await prisma.category.findUnique({ where: { id: categoryId } });
+    if (!category) return res.status(404).json({ success: false, message: 'Category not found' });
+
+    let allowedCategorySlugs = [];
+    const slug = category.slug;
+
+    if (slug === '-dress') {
+      allowedCategorySlugs = ['-shoes'];
+    } else if (slug === '-top') {
+      allowedCategorySlugs = ['-bottom', '-shoes'];
+    } else if (slug === '-bottom') {
+      allowedCategorySlugs = ['-top', '-shoes'];
+    } else if (slug === '-shoes') {
+      allowedCategorySlugs = ['-top', '-bottom'];
+    }
+
+    const products = await prisma.product.findMany({
+      where: {
+        category: {
+          slug: { in: allowedCategorySlugs }
+        },
+        active: true
+      },
+      include: {
+        category: { select: { name: true, slug: true } }
+      }
+    });
+
+    res.json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.bulkUploadProducts = async (req, res) => {
+  try {
+    const products = req.body;
+    
+    if (!Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ success: false, message: 'Invalid or empty product array' });
+    }
+
+    const createdProducts = await prisma.$transaction(
+      products.map((product) => {
+        const slug = product.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '') + '-' + Date.now() + Math.floor(Math.random() * 1000);
+        
+        return prisma.product.create({
+          data: {
+            name: product.name,
+            slug,
+            description: product.description || '',
+            price: parseFloat(product.price) || 0,
+            comparePrice: product.comparePrice ? parseFloat(product.comparePrice) : null,
+            categoryId: product.categoryId,
+            stock: parseInt(product.stock) || 100,
+            images: product.images || [],
+            avatarImage: product.avatarImage || null,
+            featured: product.featured || false,
+            active: product.active !== undefined ? product.active : true,
+          }
+        });
+      })
+    );
+
+    res.status(201).json({ 
+      success: true, 
+      message: `${createdProducts.length} products uploaded successfully`,
+      count: createdProducts.length 
+    });
+  } catch (error) {
+    console.error('Bulk upload error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

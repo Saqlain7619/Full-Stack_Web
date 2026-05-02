@@ -7,6 +7,157 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  avatar    String?
+  role      Role     @default(USER)
+  address   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cart      Cart?
+  orders    Order[]
+  reviews   Review[]
+
+  @@map("users")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  image       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              String                  @id @default(uuid())
+  name            String
+  slug            String                  @unique
+  description     String
+  price           Float
+  comparePrice    Float?
+  images          String[]
+  stock           Int                     @default(0)
+  sold            Int                     @default(0)
+  rating          Float                   @default(0)
+  reviewCount     Int                     @default(0)
+  featured        Boolean                 @default(false)
+  active          Boolean                 @default(true)
+  tags            String[]
+  categoryId      String
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  avatarImage     String?                 @map("avatar_image")
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  recommendations ProductRecommendation[] @relation("ProductToRecommendations")
+  recommendedBy   ProductRecommendation[] @relation("RecommendedToProduct")
+  category        Category                @relation(fields: [categoryId], references: [id])
+  reviews         Review[]
+
+  @@map("products")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  title     String?
+  comment   String
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  userId    String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  quantity  Int      @default(1)
+  cartId    String
+  productId String
+  createdAt DateTime @default(now())
+  size      String?
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId, size])
+  @@map("cart_items")
+}
+
+model Order {
+  id              String        @id @default(uuid())
+  orderNumber     String        @unique
+  status          OrderStatus   @default(PENDING)
+  subtotal        Float
+  tax             Float         @default(0)
+  shipping        Float         @default(0)
+  total           Float
+  shippingAddress Json
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  userId          String
+  paidAt          DateTime?
+  paymentData     Json?
+  paymentGateway  String?
+  transactionId   String?
+  paymentMethod   PaymentMethod @default(COD)
+  paymentStatus   PaymentStatus @default(PENDING)
+  items           OrderItem[]
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  quantity  Int
+  price     Float
+  orderId   String
+  productId String
+  size      String?
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model ProductRecommendation {
+  id                   String  @id @default(uuid())
+  productId            String
+  recommendedProductId String
+  product              Product @relation("ProductToRecommendations", fields: [productId], references: [id], onDelete: Cascade)
+  recommendedProduct   Product @relation("RecommendedToProduct", fields: [recommendedProductId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, recommendedProductId])
+  @@map("product_recommendations")
+}
+
 enum Role {
   USER
   ADMIN
@@ -34,174 +185,4 @@ enum PaymentMethod {
   JAZZCASH
   EASYPAISA
   PAYFAST
-}
-
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  phone     String?
-  avatar    String?
-  role      Role     @default(USER)
-  address   Json?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  orders  Order[]
-  reviews Review[]
-  cart    Cart?
-
-  @@map("users")
-}
-
-model Category {
-  id          String    @id @default(uuid())
-  name        String    @unique
-  slug        String    @unique
-  description String?
-  image       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  products Product[]
-
-  @@map("categories")
-}
-
-model Product {
-  id           String   @id @default(uuid())
-  name         String
-  slug         String   @unique
-  description  String
-  price        Float
-  comparePrice Float?
-  images       String[]
-  avatarImage  String?  @map("avatar_image")
-  stock        Int      @default(0)
-  sold         Int      @default(0)
-  rating       Float    @default(0)
-  reviewCount  Int      @default(0)
-  featured     Boolean  @default(false)
-  active       Boolean  @default(true)
-  tags         String[]
-  categoryId   String
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  category   Category    @relation(fields: [categoryId], references: [id])
-  reviews    Review[]
-  orderItems OrderItem[]
-  cartItems  CartItem[]
-
-  recommendations  ProductRecommendation[] @relation("ProductToRecommendations")
-  recommendedBy    ProductRecommendation[] @relation("RecommendedToProduct")
-
-  @@map("products")
-}
-
-model Review {
-  id        String   @id @default(uuid())
-  rating    Int
-  title     String?
-  comment   String
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId    String
-  productId String
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, productId])
-  @@map("reviews")
-}
-
-model Cart {
-  id        String     @id @default(uuid())
-  userId    String     @unique
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items CartItem[]
-
-  @@map("carts")
-}
-
-model CartItem {
-  id        String   @id @default(uuid())
-  quantity  Int      @default(1)
-  size      String?
-  cartId    String
-  productId String
-  createdAt DateTime @default(now())
-
-  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([cartId, productId, size])
-  @@map("cart_items")
-}
-
-model Order {
-  id              String         @id @default(uuid())
-  orderNumber     String         @unique
-
-  status          OrderStatus    @default(PENDING)
-
-  subtotal        Float
-  tax             Float          @default(0)
-  shipping        Float          @default(0)
-  total           Float
-
-  shippingAddress Json
-
-  paymentMethod   PaymentMethod  @default(COD)
-  paymentStatus   PaymentStatus  @default(PENDING)
-
-  transactionId   String?
-  paymentGateway  String?
-  paymentData     Json?
-  paidAt          DateTime?
-
-  notes           String?
-
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-
-  userId String
-  user   User        @relation(fields: [userId], references: [id])
-  items  OrderItem[]
-
-  @@map("orders")
-}
-
-model OrderItem {
-  id        String @id @default(uuid())
-  quantity  Int
-  price     Float
-  size      String?
-  orderId   String
-  productId String
-
-  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
-
-  @@map("order_items")
-}
-
-model ProductRecommendation {
-  id                    String  @id @default(uuid())
-  productId             String
-  recommendedProductId  String
-
-  product              Product @relation("ProductToRecommendations", fields: [productId], references: [id], onDelete: Cascade)
-  recommendedProduct   Product @relation("RecommendedToProduct", fields: [recommendedProductId], references: [id], onDelete: Cascade)
-
-  @@unique([productId, recommendedProductId])
-  @@map("product_recommendations")
 }

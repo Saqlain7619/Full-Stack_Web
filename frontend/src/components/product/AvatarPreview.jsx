@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Sparkles, Loader2, Image as ImageIcon, Shirt, ShoppingBag, CheckCircle } from 'lucide-react';
+import { Sparkles, Loader2, Image as ImageIcon, Shirt, ShoppingBag, CheckCircle, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../store/cartSlice';
 import toast from 'react-hot-toast';
+import { formatPrice } from '../../utils/formatPrice';
 
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -18,6 +19,8 @@ export default function AvatarPreview({ product, lookItems = [], selectedSize })
   const [isAddingAll, setIsAddingAll] = useState(false);
   const [showAvatar, setShowAvatar] = useState(false);
   const [error, setError] = useState(null);
+  const [showSizeModal, setShowSizeModal] = useState(false);
+  const [lookSizes, setLookSizes] = useState({});
 
   const productImg = getImageUrl(product.images?.[0]);
   const avatarImg = getImageUrl(product.avatarImage);
@@ -45,22 +48,37 @@ export default function AvatarPreview({ product, lookItems = [], selectedSize })
     setError(null);
   };
 
-  const handleCompleteLook = async () => {
+  const handleOpenSizeModal = () => {
     if (!token) { toast.error('Please login to checkout'); return; }
-    if (!selectedSize) { toast.error('Please select a size first'); return; }
+    const initialSizes = {};
+    if (selectedSize) initialSizes[product.id] = selectedSize;
+    setLookSizes(initialSizes);
+    setShowSizeModal(true);
+  };
+
+  const isAllSizesSelected = () => {
+    const allItems = [product, ...lookItems];
+    for (const item of allItems) {
+      if (!lookSizes[item.id]) return false;
+    }
+    return true;
+  };
+
+  const handleCompleteLook = async () => {
+    if (!isAllSizesSelected()) {
+      toast.error('Please select all required sizes');
+      return;
+    }
     
     setIsAddingAll(true);
     try {
-      // Add main product with selected size
-      await dispatch(addToCart({ productId: product.id, quantity: 1, size: selectedSize })).unwrap();
-      
-      // Add all look items with fallback sizes
-      for (const item of lookItems) {
-        const itemSize = item.category?.name?.toLowerCase()?.includes('shoe') ? '8' : 'M';
-        await dispatch(addToCart({ productId: item.id, quantity: 1, size: itemSize })).unwrap();
+      const allItems = [product, ...lookItems];
+      for (const item of allItems) {
+        await dispatch(addToCart({ productId: item.id, quantity: 1, size: lookSizes[item.id] })).unwrap();
       }
       
       toast.success('Complete Look added to cart!');
+      setShowSizeModal(false);
       setShowAvatar(false);
     } catch (err) {
       toast.error('Failed to add some items');
@@ -178,7 +196,7 @@ export default function AvatarPreview({ product, lookItems = [], selectedSize })
         ) : (
             <div className="flex flex-col gap-2">
               <button 
-                onClick={handleCompleteLook}
+                onClick={handleOpenSizeModal}
                 disabled={isAddingAll}
                 className="w-full bg-black text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 transition-all active:scale-95 shadow-xl hover:bg-primary-900"
               >
@@ -197,6 +215,73 @@ export default function AvatarPreview({ product, lookItems = [], selectedSize })
           {showAvatar ? 'Static AI Simulation is active' : 'Virtual fitting uses pre-processed neural images'}
         </p>
       </div>
+
+      {/* Size Selection Modal */}
+      {showSizeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto hide-scrollbar">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-display font-bold text-xl">Select Sizes</h3>
+              <button onClick={() => setShowSizeModal(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="space-y-6">
+              {[product, ...lookItems].map(item => {
+                const isShoe = item.category?.name?.toLowerCase()?.includes('shoe');
+                const sizes = isShoe ? ['6', '7', '8', '9', '10'] : ['S', 'M', 'L', 'XL'];
+                return (
+                  <div key={item.id} className="border border-black/10 rounded-2xl p-4 transition-all hover:border-black/20 hover:shadow-sm">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-gray-50 border border-black/5">
+                        <img src={getImageUrl(item.images?.[0])} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-sm text-black leading-tight line-clamp-2 mb-1">{item.name}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-black/40 mb-1">{item.category?.name}</p>
+                        <p className="font-bold text-primary-600 text-sm">{formatPrice(item.price)}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-black/60 mb-3">
+                        {isShoe ? 'Shoe Size (Required)' : 'Select Size'}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {sizes.map(size => (
+                          <button
+                            key={size}
+                            onClick={() => setLookSizes(prev => ({...prev, [item.id]: size}))}
+                            className={`w-12 h-10 flex items-center justify-center rounded-xl font-bold text-xs transition-all border ${lookSizes[item.id] === size ? 'border-black bg-black text-white shadow-md' : 'border-black/10 text-black hover:border-black/30'}`}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="mt-8 pt-6 border-t border-black/10">
+              <button
+                onClick={handleCompleteLook}
+                disabled={!isAllSizesSelected() || isAddingAll}
+                className={`w-full py-4 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] flex items-center justify-center gap-3 transition-all ${!isAllSizesSelected() ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-black text-white shadow-xl hover:bg-primary-900 hover:-translate-y-1'}`}
+              >
+                {isAddingAll ? <Loader2 size={18} className="animate-spin" /> : <ShoppingBag size={18} />}
+                {isAddingAll ? 'Adding to Order...' : 'Place Order'}
+              </button>
+              {!isAllSizesSelected() && (
+                <p className="text-red-500/80 text-[10px] text-center mt-3 uppercase tracking-widest font-bold animate-pulse">
+                  Please select all required sizes
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

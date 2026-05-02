@@ -4,6 +4,7 @@ import api from '../../api/axios';
 import Spinner from '../../components/common/Spinner';
 import toast from 'react-hot-toast';
 import { formatPrice } from '../../utils/formatPrice';
+import RecommendationSelector from '../../components/admin/RecommendationSelector';
 
 // ✅ FIX 1: Yeh function local path ko full URL mein convert karta hai
 const getImageUrl = (path) => {
@@ -34,7 +35,8 @@ export default function AdminProducts() {
   const [saving, setSaving] = useState(false);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-  const [allProducts, setAllProducts] = useState([]);
+  const [recommendationOptions, setRecommendationOptions] = useState([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
   const load = async (p = page) => {
     setLoading(true);
@@ -61,18 +63,29 @@ export default function AdminProducts() {
     return () => clearTimeout(t);
   }, [search]);
 
+  useEffect(() => {
+    const fetchOptions = async () => {
+      if (!form.categoryId) {
+        setRecommendationOptions([]);
+        return;
+      }
+      setLoadingRecommendations(true);
+      try {
+        const res = await api.get(`/products/recommendation-options/${form.categoryId}`);
+        const filtered = res.data.products.filter(p => !editing || p.id !== editing.id);
+        setRecommendationOptions(filtered);
+      } catch (err) {
+        console.error('Fetch error:', err);
+      } finally {
+        setLoadingRecommendations(false);
+      }
+    };
+    if (modal) fetchOptions();
+  }, [form.categoryId, modal, editing]);
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm);
-    fetchAllProducts();
     setModal(true);
-  };
-
-  const fetchAllProducts = async () => {
-    try {
-      const res = await api.get('/products?limit=1000');
-      setAllProducts(res.data.products);
-    } catch {}
   };
 
   const openEdit = async (p) => {
@@ -95,7 +108,6 @@ export default function AdminProducts() {
     };
     
     setForm(editForm);
-    fetchAllProducts();
     setModal(true);
 
     try {
@@ -432,22 +444,22 @@ export default function AdminProducts() {
                 </div>
                 
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium mb-1">Recommended Products (Complete The Look)</label>
-                  <select 
-                    multiple
-                    value={form.recommendations}
-                    onChange={(e) => {
-                      const options = [...e.target.selectedOptions];
-                      const values = options.map(option => option.value);
-                      setForm({ ...form, recommendations: values });
-                    }}
-                    className="input-field pt-2 pb-2 h-32"
-                  >
-                    {allProducts.filter(p => !editing || p.id !== editing.id).map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                  <p className="text-xs text-gray-400 mt-1">Hold Ctrl/Cmd to select multiple products</p>
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    Complete The Look Recommendations
+                    {loadingRecommendations && <span className="ml-2 text-xs font-normal text-primary-500 animate-pulse">(Loading options...)</span>}
+                  </label>
+                  
+                  <div className="bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
+                    <RecommendationSelector 
+                      products={recommendationOptions}
+                      selected={form.recommendations}
+                      onChange={(selectedIds) => setForm({ ...form, recommendations: selectedIds })}
+                    />
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-2 flex items-center gap-1">
+                    <Package size={10} /> 
+                    Only products from relevant categories are shown based on your selection.
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-6">

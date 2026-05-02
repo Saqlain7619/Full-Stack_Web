@@ -21,6 +21,7 @@ export default function ProductDetailPage() {
   const [qty, setQty] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
   const [lookItems, setLookItems] = useState([]);
+  const [autoLookItems, setAutoLookItems] = useState([]);
   const [activeImg, setActiveImg] = useState(0);
   const [review, setReview] = useState({ rating: 5, title: '', comment: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -197,7 +198,7 @@ export default function ProductDetailPage() {
                   <ChevronLeft size={20} className="rotate-180" />
                 </button>
               </div>
-              <AvatarPreview product={product} lookItems={lookItems} selectedSize={selectedSize} />
+              <AvatarPreview product={product} lookItems={lookItems.length > 0 ? lookItems : autoLookItems} selectedSize={selectedSize} />
             </div>
           </div>
         )}
@@ -215,6 +216,7 @@ export default function ProductDetailPage() {
           }
         }}
         selectedItems={lookItems}
+        onRecommendationsLoaded={(recs) => setAutoLookItems(recs)}
       />
 
       {/* Reviews */}

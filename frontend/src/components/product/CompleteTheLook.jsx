@@ -6,7 +6,7 @@ import Spinner from '../common/Spinner';
 import { getImageUrl } from '../../utils/imageUrl';
 import { formatPrice } from '../../utils/formatPrice';
 
-export default function CompleteTheLook({ productId, categorySlug, onSelectForLook, selectedItems }) {
+export default function CompleteTheLook({ productId, categorySlug, onSelectForLook, selectedItems, onRecommendationsLoaded }) {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,7 +18,9 @@ export default function CompleteTheLook({ productId, categorySlug, onSelectForLo
         const { data: manualData } = await api.get(`/recommendations/${productId}`);
         
         if (manualData.products && manualData.products.length > 0) {
-          setRecommendations(manualData.products.slice(0, 3));
+          const recs = manualData.products.slice(0, 3);
+          setRecommendations(recs);
+          if (onRecommendationsLoaded) onRecommendationsLoaded(recs);
           return;
         }
 
@@ -54,11 +56,15 @@ export default function CompleteTheLook({ productId, categorySlug, onSelectForLo
         const smartProducts = results.flatMap(r => r.data.products || []).filter(p => p.id !== productId);
         
         if (smartProducts.length > 0) {
-          setRecommendations(smartProducts.slice(0, limit));
+          const recs = smartProducts.slice(0, limit);
+          setRecommendations(recs);
+          if (onRecommendationsLoaded) onRecommendationsLoaded(recs);
         } else {
           // Absolute fallback
           const fallbackData = await api.get(`/products?limit=4`);
-          setRecommendations((fallbackData.data.products || []).filter(p => p.id !== productId).slice(0, 3));
+          const recs = (fallbackData.data.products || []).filter(p => p.id !== productId).slice(0, 3);
+          setRecommendations(recs);
+          if (onRecommendationsLoaded) onRecommendationsLoaded(recs);
         }
       } catch (error) {
         console.error('Failed to fetch recommendations:', error);
